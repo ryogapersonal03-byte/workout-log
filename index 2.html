@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#090909">
+<title>WORKOUT LOG</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ background:#090909;
+ color:#fff;
+ font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue","Noto Sans JP",sans-serif;
+}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;border:0}
+.app{
+ max-width:680px;
+ margin:auto;
+ padding-bottom:90px;
+}
+header{
+ position:sticky;
+ top:0;
+ z-index:20;
+ background:#090909ee;
+ backdrop-filter:blur(12px);
+ border-bottom:1px solid #252525;
+ padding:16px;
+}
+.logo{
+ font-size:20px;
+ font-weight:900;
+ letter-spacing:1.5px;
+}
+.date{
+ color:#888;
+ font-size:12px;
+ margin-top:3px;
+}
+main{padding:14px}
+.card{
+ background:#151515;
+ border:1px solid #252525;
+ border-radius:18px;
+ padding:15px;
+ margin-bottom:12px;
+}
+.row{
+ display:flex;
+ gap:8px;
+ align-items:center;
+}
+.between{justify-content:space-between}
+.title{
+ font-weight:900;
+ font-size:17px;
+}
+.sub{
+ color:#888;
+ font-size:12px;
+ margin-top:3px;
+}
+.btn{
+ background:#fff;
+ color:#000;
+ padding:11px 14px;
+ border-radius:12px;
+ font-weight:800;
+}
+.btn.dark{
+ background:#242424;
+ color:#fff;
+}
+.btn.red{
+ background:#321616;
+ color:#ff7777;
+}
+.btn.green{
+ background:#18351f;
+ color:#7cff98;
+}
+.btn.full{width:100%}
+input,select,textarea{
+ width:100%;
+ border:1px solid #303030;
+ background:#0e0e0e;
+ color:#fff;
+ border-radius:11px;
+ padding:11px;
+ outline:none;
+}
+input:focus,select:focus,textarea:focus{
+ border-color:#777;
+}
+label{
+ display:block;
+ font-size:11px;
+ color:#888;
+ margin:10px 0 5px;
+}
+.badge{
+ display:inline-block;
+ padding:4px 8px;
+ border-radius:99px;
+ background:#292929;
+ color:#aaa;
+ font-size:10px;
+ margin-left:4px;
+}
+.set{
+ background:#101010;
+ border:1px solid #242424;
+ border-radius:13px;
+ padding:9px;
+ margin-top:7px;
+}
+.setgrid{
+ display:grid;
+ grid-template-columns:34px 1fr 1fr 38px;
+ gap:6px;
+ align-items:center;
+}
+.setnum{
+ color:#777;
+ text-align:center;
+ font-size:12px;
+}
+.options{
+ display:flex;
+ flex-wrap:wrap;
+ gap:6px;
+ margin-top:8px;
+}
+.toggle{
+ background:#222;
+ color:#aaa;
+ padding:7px 9px;
+ border-radius:9px;
+ font-size:11px;
+}
+.toggle.active{
+ background:#fff;
+ color:#000;
+}
+.small{
+ font-size:11px;
+ color:#777;
+}
+.prev{
+ background:#191919;
+ border-radius:10px;
+ padding:8px;
+ margin-top:8px;
+ font-size:11px;
+ color:#aaa;
+}
+.exercise-actions{
+ display:flex;
+ gap:6px;
+ margin-top:9px;
+}
+.exercise-actions button{
+ flex:1;
+}
+.empty{
+ text-align:center;
+ color:#666;
+ padding:35px 10px;
+}
+.bottom{
+ position:fixed;
+ bottom:0;
+ left:0;
+ right:0;
+ z-index:30;
+ background:#111e;
+ backdrop-filter:blur(15px);
+ border-top:1px solid #292929;
+}
+.bottom-inner{
+ max-width:680px;
+ margin:auto;
+ display:flex;
+}
+.bottom button{
+ flex:1;
+ padding:14px 4px;
+ background:transparent;
+ color:#777;
+ font-size:11px;
+}
+.bottom button.active{color:#fff}
+.hidden{display:none!important}
+.history-item{
+ padding:13px 0;
+ border-bottom:1px solid #292929;
+}
+.history-item:last-child{border:0}
+.pr{
+ display:flex;
+ justify-content:space-between;
+ padding:10px 0;
+ border-bottom:1px solid #292929;
+}
+.timer{
+ position:fixed;
+ right:14px;
+ bottom:72px;
+ z-index:40;
+ background:#fff;
+ color:#000;
+ border-radius:15px;
+ padding:12px 15px;
+ font-weight:900;
+ box-shadow:0 5px 30px #000;
+}
+.timer button{
+ background:#000;
+ color:#fff;
+ border-radius:8px;
+ padding:6px 9px;
+ margin-left:6px;
+}
+h2{
+ font-size:14px;
+ margin:0 0 10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header>
+ <div class="logo">WORKOUT LOG</div>
+ <div class="date" id="date"></div>
+</header>
+
+<main>
+
+<!-- WORKOUT -->
+<section id="workoutPage">
+
+<div class="card">
+ <div class="row between">
+  <div>
+   <div class="title">TODAY'S WORKOUT</div>
+   <div class="sub">前回の記録を確認しながら入力</div>
+  </div>
+  <button class="btn green" onclick="finishWorkout()">保存</button>
+ </div>
+</div>
+
+<div id="exerciseList"></div>
+
+<div class="card">
+ <h2>種目を追加</h2>
+
+ <button class="btn full" onclick="addExercise('normal')">
+ ＋ 通常セット
+ </button>
+
+ <div class="row" style="margin-top:8px">
+  <button class="btn dark" style="flex:1" onclick="addExercise('drop')">
+  🔻 ドロップ
+  </button>
+
+  <button class="btn dark" style="flex:1" onclick="addExercise('superset')">
+  🔗 スーパー
+  </button>
+ </div>
+
+ <button class="btn dark full" style="margin-top:8px"
+ onclick="addExercise('giant')">
+ 🔥 ジャイアント
+ </button>
+</div>
+
+<div class="card">
+ <button class="btn dark full" onclick="copyLastWorkout()">
+ 📋 前回メニューをコピー
+ </button>
+</div>
+
+</section>
+
+
+<!-- HISTORY -->
+<section id="historyPage" class="hidden">
+
+<div class="card">
+ <h2>トレーニング履歴</h2>
+ <div id="historyList"></div>
+</div>
+
+<div class="card">
+ <h2>🏆 種目別PR</h2>
+ <div id="prList"></div>
+</div>
+
+</section>
+
+
+<!-- SETTINGS -->
+<section id="settingsPage" class="hidden">
+
+<div class="card">
+ <h2>データ管理</h2>
+
+ <button class="btn full" onclick="backup()">
+ 📤 バックアップ
+ </button>
+
+ <label>バックアップを復元</label>
+ <input type="file" accept=".json" onchange="restore(event)">
+
+ <button class="btn red full" style="margin-top:12px"
+ onclick="clearAll()">
+ 全データ削除
+ </button>
+</div>
+
+</section>
+
+</main>
+
+
+<div id="timer" class="timer hidden">
+ <span id="timerText">00:00</span>
+ <button onclick="stopTimer()">停止</button>
+</div>
+
+
+<nav class="bottom">
+ <div class="bottom-inner">
+  <button class="active" onclick="showPage('workout',this)">
+   🏋️<br>記録
+  </button>
+
+  <button onclick="showPage('history',this)">
+   📊<br>履歴
+  </button>
+
+  <button onclick="showPage('settings',this)">
+   ⚙️<br>設定
+  </button>
+ </div>
+</nav>
+
+</div>
+
+
+<script>
+
+const KEY="WORKOUT_LOG_V2";
+
+let db=JSON.parse(
+ localStorage.getItem(KEY) ||
+ '{"history":[],"draft":[]}'
+);
+
+let draft=db.draft || [];
+
+const uid=()=>Date.now().toString(36)+
+ Math.random().toString(36).substring(2);
+
+const esc=s=>String(s??"").replace(
+ /[&<>"']/g,
+ m=>({
+  "&":"&amp;",
+  "<":"&lt;",
+  ">":"&gt;",
+  '"':"&quot;",
+  "'":"&#39;"
+ }[m])
+);
+
+document.getElementById("date").textContent=
+ new Date().toLocaleDateString(
+  "ja-JP",
+  {
+   year:"numeric",
+   month:"long",
+   day:"numeric",
+   weekday:"short"
+  }
+);
+
+
+function save(){
+ db.draft=draft;
+ localStorage.setItem(KEY,JSON.stringify(db));
+}
+
+
+function previous(name){
+
+ if(!name)return null;
+
+ for(const workout of db.history){
+
+  for(const ex of workout.exercises || []){
+
+   if(ex.name===name){
+    return ex;
+   }
+
+  }
+
+ }
+
+ return null;
+}
+
+
+function addExercise(type){
+
+ let count=1;
+
+ if(type==="superset")count=2;
+ if(type==="giant")count=4;
+
+ let ex={
+  id:uid(),
+  type:type,
+  name:"",
+  sets:[]
+ };
+
+ for(let i=0;i<count;i++){
+
+  ex.sets.push({
+   id:uid(),
+   weight:"",
+   reps:"",
+   assist:false,
+   restPause:false,
+   restSeconds:"",
+   cheating:false,
+   rir:"",
+   rpe:"",
+   note:""
+  });
+
+ }
+
+ draft.push(ex);
+
+ save();
+ render();
+
+}
+
+
+function deleteExercise(id){
+
+ draft=draft.filter(e=>e.id!==id);
+
+ save();
+ render();
+
+}
+
+
+function addSet(eid){
+
+ const e=draft.find(x=>x.id===eid);
+
+ if(!e)return;
+
+ e.sets.push({
+  id:uid(),
+  weight:"",
+  reps:"",
+  assist:false,
+  restPause:false,
+  restSeconds:"",
+  cheating:false,
+  rir:"",
+  rpe:"",
+  note:""
+ });
+
+ save();
+ render();
+
+}
+
+
+function deleteSet(eid,sid){
+
+ const e=draft.find(x=>x.id===eid);
+
+ if(!e)return;
+
+ e.sets=e.sets.filter(s=>s.id!==sid);
+
+ save();
+ render();
+
+}
+
+
+function updateExercise(id,key,value){
+
+ const e=draft.find(x=>x.id===id);
+
+ if(!e)return;
+
+ e[key]=value;
+
+ save();
+
+}
+
+
+function updateSet(eid,sid,key,value){
+
+ const e=draft.find(x=>x.id===eid);
+
+ if(!e)return;
+
+ const s=e.sets.find(x=>x.id===sid);
+
+ if(!s)return;
+
+ s[key]=value;
+
+ save();
+
+}
+
+
+function toggleSet(eid,sid,key){
+
+ const e=draft.find(x=>x.id===eid);
+ const s=e.sets.find(x=>x.id===sid);
+
+ s[key]=!s[key];
+
+ save();
+ render();
+
+}
+
+
+function render(){
+
+ const root=document.getElementById("exerciseList");
+
+ root.innerHTML="";
+
+ if(!draft.length){
+
+  root.innerHTML=
+  '<div class="card empty">種目を追加してトレーニング開始</div>';
+
+  return;
+
+ }
+
+
+ draft.forEach((e,index)=>{
+
+  const typeName={
+   normal:"通常",
+   drop:"ドロップ",
+   superset:"スーパー",
+   giant:"ジャイアント"
+  }[e.type];
+
+  const prev=previous(e.name);
+
+  let html=`
+
+  <div class="card">
+
+   <div class="row between">
+
+    <div class="title">
+     ${index+1}. ${esc(e.name || "種目名")}
+     <span class="badge">${typeName}</span>
+    </div>
+
+    <button class="btn red"
+    onclick="deleteExercise('${e.id}')">
+    削除
+    </button>
+
+   </div>
+
+   <label>種目名</label>
+
+   <input
+    value="${esc(e.name)}"
+    placeholder="例：ベンチプレス"
+    oninput="updateExercise('${e.id}','name',this.value)"
+   >
+  `;
+
+
+  if(prev){
+
+   html+=`
+   <div class="prev">
+   前回：
+   ${prev.sets.map(s=>
+    `${s.weight||"-"}kg × ${s.reps||"-"}`
+   ).join(" / ")}
+   </div>
+   `;
+
+  }
+
+
+  e.sets.forEach((s,i)=>{
+
+   html+=`
+
+   <div class="set">
+
+    <div class="setgrid">
+
+     <div class="setnum">
+      SET<br>${i+1}
+     </div>
+
+     <input
+      type="number"
+      step="0.5"
+      placeholder="重量 kg"
+      value="${esc(s.weight)}"
+      oninput="
+      updateSet(
+       '${e.id}',
+       '${s.id}',
+       'weight',
+       this.value
+      )"
+     >
+
+     <input
+      type="number"
+      placeholder="回数"
+      value="${esc(s.reps)}"
+      oninput="
+      updateSet(
+       '${e.id}',
+       '${s.id}',
+       'reps',
+       this.value
+      )"
+     >
+
+     <button
+      class="btn red"
+      onclick="deleteSet('${e.id}','${s.id}')">
+      ×
+     </button>
+
+    </div>
+
+
+    <div class="options">
+
+     <button
+      class="toggle ${s.assist?'active':''}"
+      onclick="
+      toggleSet(
+       '${e.id}',
+       '${s.id}',
+       'assist'
+      )">
+      🤝 補助
+     </button>
+
+     <button
+      class="toggle ${s.restPause?'active':''}"
+      onclick="
+      toggleSet(
+       '${e.id}',
+       '${s.id}',
+       'restPause'
+      )">
+      ⏱ レストポーズ
+     </button>
+
+     <button
+      class="toggle ${s.cheating?'active':''}"
+      onclick="
+      toggleSet(
+       '${e.id}',
+       '${s.id}',
+       'cheating'
+      )">
+      ⚡ チーティング
+     </button>
+
+    </div>
+   `;
+
+
+   if(s.restPause){
+
+    html+=`
+
+    <div class="row" style="margin-top:7px">
+
+     <input
+      type="number"
+      placeholder="休憩秒数"
+      value="${esc(s.restSeconds)}"
+      oninput="
+      updateSet(
+       '${e.id}',
+       '${s.id}',
+       'restSeconds',
+       this.value
+      )"
+     >
+
+     <button
+      class="btn"
+      onclick="startTimer(${Number(s.restSeconds)||15})">
+      タイマー
+     </button>
+
+    </div>
+
+    `;
+
+   }
+
+
+   html+=`
+
+   <div class="row" style="margin-top:7px">
+
+    <input
+     type="number"
+     min="0"
+     max="10"
+     step="0.5"
+     placeholder="RIR"
+     value="${esc(s.rir)}"
+     oninput="
+     updateSet(
+      '${e.id}',
+      '${s.id}',
+      'rir',
+      this.value
+     )"
+    >
+
+    <input
+     type="number"
+     min="1"
+     max="10"
+     step="0.5"
+     placeholder="RPE"
+     value="${esc(s.rpe)}"
+     oninput="
+     updateSet(
+      '${e.id}',
+      '${s.id}',
+      'rpe',
+      this.value
+     )"
+    >
+
+   </div>
+
+
+   <input
+    style="margin-top:7px"
+    placeholder="メモ"
+    value="${esc(s.note)}"
+    oninput="
+    updateSet(
+     '${e.id}',
+     '${s.id}',
+     'note',
+     this.value
+    )"
+   >
+
+   </div>
+
+   `;
+
+  });
+
+
+  html+=`
+
+   <div class="exercise-actions">
+
+    <button
+     class="btn dark"
+     onclick="addSet('${e.id}')">
+     ＋ セット
+    </button>
+
+   </div>
+
+  </div>
+  `;
+
+
+  root.insertAdjacentHTML("beforeend",html);
+
+ });
+
+}
+
+
+function finishWorkout(){
+
+ if(!draft.length){
+
+  alert("種目を追加してください");
+
+  return;
+
+ }
+
+
+ const workout={
+  id:uid(),
+  date:new Date().toISOString(),
+  exercises:JSON.parse(JSON.stringify(draft))
+ };
+
+ db.history.unshift(workout);
+
+ draft=[];
+
+ save();
+
+ render();
+
+ renderHistory();
+
+ alert("トレーニングを保存しました！");
+
+}
+
+
+function copyLastWorkout(){
+
+ if(!db.history.length){
+
+  alert("まだ前回の記録がありません");
+
+  return;
+
+ }
+
+ const last=db.history[0];
+
+ draft=JSON.parse(
+  JSON.stringify(last.exercises)
+ );
+
+ draft.forEach(e=>{
+
+  e.id=uid();
+
+  e.sets.forEach(s=>{
+   s.id=uid();
+  });
+
+ });
+
+ save();
+
+ render();
+
+ alert("前回メニューをコピーしました！");
+
+}
+
+
+function renderHistory(){
+
+ const root=document.getElementById("historyList");
+
+ if(!db.history.length){
+
+  root.innerHTML=
+  '<div class="empty">まだ記録がありません</div>';
+
+  return;
+
+ }
+
+
+ root.innerHTML=db.history.map(w=>{
+
+  const date=new Date(w.date).toLocaleDateString(
+   "ja-JP",
+   {
+    year:"numeric",
+    month:"short",
+    day:"numeric"
+   }
+  );
+
+  return`
+
+  <div class="history-item">
+
+   <b>${date}</b>
+
+   <div class="sub">
+
+    ${w.exercises.map(e=>
+     `${esc(e.name||"名称未設定")}（${e.sets.length}セット）`
+    ).join(" / ")}
+
+   </div>
+
+  </div>
+
+  `;
+
+ }).join("");
+
+ renderPR();
+
+}
+
+
+function renderPR(){
+
+ const root=document.getElementById("prList");
+
+ const prs={};
+
+ db.history.forEach(w=>{
+
+  w.exercises.forEach(e=>{
+
+   if(!e.name)return;
+
+   e.sets.forEach(s=>{
+
+    const weight=Number(s.weight)||0;
+
+    if(!prs[e.name] || weight>prs[e.name]){
+     prs[e.name]=weight;
+    }
+
+   });
+
+  });
+
+ });
+
+
+ const names=Object.keys(prs);
+
+ if(!names.length){
+
+  root.innerHTML=
+  '<div class="empty">まだPRがありません</div>';
+
+  return;
+
+ }
+
+
+ root.innerHTML=names.map(name=>`
+
+ <div class="pr">
+
+  <span>${esc(name)}</span>
+
+  <b>${prs[name]} kg</b>
+
+ </div>
+
+ `).join("");
+
+}
+
+
+function showPage(name,button){
+
+ ["workout","history","settings"].forEach(x=>{
+
+  document
+  .getElementById(x+"Page")
+  .classList.toggle(
+   "hidden",
+   x!==name
+  );
+
+ });
+
+ document
+ .querySelectorAll(".bottom button")
+ .forEach(b=>b.classList.remove("active"));
+
+ button.classList.add("active");
+
+ if(name==="history"){
+  renderHistory();
+ }
+
+}
+
+
+let timerInterval=null;
+let timerEnd=0;
+
+
+function startTimer(seconds){
+
+ stopTimer();
+
+ timerEnd=Date.now()+seconds*1000;
+
+ document
+ .getElementById("timer")
+ .classList.remove("hidden");
+
+ updateTimer();
+
+ timerInterval=setInterval(
+  updateTimer,
+  250
+ );
+
+}
+
+
+function updateTimer(){
+
+ const remaining=Math.max(
+  0,
+  timerEnd-Date.now()
+ );
+
+ const sec=Math.ceil(
+  remaining/1000
+ );
+
+ const m=String(
+  Math.floor(sec/60)
+ ).padStart(2,"0");
+
+ const s=String(
+  sec%60
+ ).padStart(2,"0");
+
+ document.getElementById("timerText")
+ .textContent=`${m}:${s}`;
+
+ if(remaining<=0){
+
+  clearInterval(timerInterval);
+
+  if(navigator.vibrate){
+   navigator.vibrate([200,100,200]);
+  }
+
+ }
+
+}
+
+
+function stopTimer(){
+
+ clearInterval(timerInterval);
+
+ document
+ .getElementById("timer")
+ .classList.add("hidden");
+
+}
+
+
+function backup(){
+
+ const blob=new Blob(
+  [JSON.stringify(db,null,2)],
+  {type:"application/json"}
+ );
+
+ const url=URL.createObjectURL(blob);
+
+ const a=document.createElement("a");
+
+ a.href=url;
+
+ a.download=
+ "workout-log-backup-"+
+ new Date().toISOString().slice(0,10)+
+ ".json";
+
+ a.click();
+
+ URL.revokeObjectURL(url);
+
+}
+
+
+function restore(event){
+
+ const file=event.target.files[0];
+
+ if(!file)return;
+
+ const reader=new FileReader();
+
+ reader.onload=()=>{
+
+  try{
+
+   const imported=
+   JSON.parse(reader.result);
+
+   if(
+    !imported.history ||
+    !Array.isArray(imported.history)
+   ){
+
+    throw new Error();
+
+   }
+
+   db=imported;
+
+   draft=db.draft||[];
+
+   save();
+
+   render();
+
+   renderHistory();
+
+   alert("バックアップを復元しました！");
+
+  }catch{
+
+   alert("バックアップファイルを読み込めませんでした。");
+
+  }
+
+ };
+
+ reader.readAsText(file);
+
+}
+
+
+function clearAll(){
+
+ if(
+  confirm(
+   "すべてのトレーニングデータを削除しますか？"
+  )
+ ){
+
+  db={
+   history:[],
+   draft:[]
+  };
+
+  draft=[];
+
+  save();
+
+  render();
+
+  renderHistory();
+
+ }
+
+}
+
+
+render();
+renderHistory();
+
+</script>
+
+</body>
+</html>
