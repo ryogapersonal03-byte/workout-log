@@ -751,6 +751,102 @@ if(!Array.isArray(db.draft))
 
 if(!Array.isArray(db.exercises))
  db.exercises=[];
+ /* ==================================================
+デフォルト種目
+================================================== */
+
+const DEFAULT_EXERCISES = [
+
+ /* 胸 */
+ {name:"ベンチプレス",part:"胸"},
+ {name:"インクラインベンチプレス",part:"胸"},
+ {name:"インクラインダンベルプレス",part:"胸"},
+ {name:"チェストプレス",part:"胸"},
+ {name:"ペックフライ",part:"胸"},
+ {name:"ダンベルフライ",part:"胸"},
+
+ /* 背中 */
+ {name:"ラットプルダウン",part:"背中"},
+ {name:"懸垂",part:"背中"},
+ {name:"シーテッドロー",part:"背中"},
+ {name:"ワンハンドダンベルロー",part:"背中"},
+ {name:"ベントオーバーロー",part:"背中"},
+ {name:"レバーロー",part:"背中"},
+
+ /* 肩 */
+ {name:"ショルダープレス",part:"肩"},
+ {name:"ダンベルショルダープレス",part:"肩"},
+ {name:"サイドレイズ",part:"肩"},
+ {name:"デルトイドレイズ",part:"肩"},
+ {name:"リアレイズ",part:"肩"},
+ {name:"フェイスプル",part:"肩"},
+
+ /* 腕 */
+ {name:"バーベルカール",part:"腕"},
+ {name:"EZバーカール",part:"腕"},
+ {name:"ダンベルカール",part:"腕"},
+ {name:"ハンマーカール",part:"腕"},
+ {name:"ケーブルカール",part:"腕"},
+ {name:"プレスダウン",part:"腕"},
+ {name:"フレンチプレス",part:"腕"},
+ {name:"ライイングエクステンション",part:"腕"},
+
+ /* 脚 */
+ {name:"スクワット",part:"脚"},
+ {name:"レッグプレス",part:"脚"},
+ {name:"ハックスクワット",part:"脚"},
+ {name:"レッグエクステンション",part:"脚"},
+ {name:"レッグカール",part:"脚"},
+ {name:"ブルガリアンスクワット",part:"脚"},
+ {name:"ルーマニアンデッドリフト",part:"脚"},
+ {name:"カーフレイズ",part:"脚"},
+
+ /* お尻 */
+ {name:"ヒップスラスト",part:"お尻"},
+ {name:"グルートブリッジ",part:"お尻"},
+ {name:"アブダクション",part:"お尻"},
+ {name:"ブルガリアンスクワット",part:"お尻"},
+ {name:"ルーマニアンデッドリフト",part:"お尻"},
+
+ /* 腹部 */
+ {name:"アブドミナルクランチ",part:"腹部"},
+ {name:"ケーブルクランチ",part:"腹部"},
+ {name:"レッグレイズ",part:"腹部"},
+ {name:"ハンギングレッグレイズ",part:"腹部"},
+
+ /* その他 */
+ {name:"デッドリフト",part:"その他"},
+ {name:"ハイクリーン",part:"その他"}
+
+];
+
+
+/*
+初回のみデフォルト種目を登録
+既に自分で登録した種目は消さない
+*/
+
+if(db.exercises.length===0){
+
+ db.exercises=
+ DEFAULT_EXERCISES.map(
+  exercise=>({
+
+   id:uid(),
+
+   name:exercise.name,
+
+   part:exercise.part
+
+  })
+ );
+
+ localStorage.setItem(
+  KEY,
+  JSON.stringify(db)
+ );
+
+}
 
 
 let draft=db.draft;
