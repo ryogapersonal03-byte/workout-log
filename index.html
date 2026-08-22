@@ -413,6 +413,42 @@ h2{
  color:#777;
 }
 
+.selection-info{
+ margin-top:10px;
+ padding:10px;
+ background:#101010;
+ border:1px solid #292929;
+ border-radius:10px;
+ color:#aaa;
+ font-size:11px;
+ line-height:1.7;
+}
+
+.selection-info strong{
+ color:#fff;
+}
+
+.group-box{
+ margin-top:12px;
+ padding:10px;
+ background:#0d0d0d;
+ border:1px solid #292929;
+ border-radius:12px;
+}
+
+.group-title{
+ font-size:11px;
+ font-weight:900;
+ color:#aaa;
+ margin-bottom:7px;
+}
+
+.group-exercise{
+ font-size:13px;
+ font-weight:800;
+ padding:5px 0;
+}
+
 </style>
 </head>
 
@@ -558,6 +594,15 @@ id="partGrid">
 <div
 class="exercise-grid"
 id="exerciseGrid">
+</div>
+
+
+<div
+id="selectionInfo"
+class="selection-info">
+
+<strong>種目を選択してください</strong>
+
 </div>
 
 </div>
@@ -924,11 +969,27 @@ const parts=Object.keys(exercises);
 
 let selectedMethod="normal";
 
+
 let selectedPart=
  localStorage.getItem("WORKOUT_LAST_PART") ||
  parts[0];
 
-let selectedExercise="";
+
+/*
+ * 複数種目を保持
+ *
+ * 通常セット・ドロップセット
+ * → 1種目
+ *
+ * スーパーセット
+ * → 2種目
+ *
+ * ジャイアントセット
+ * → 3〜5種目
+ */
+
+let selectedExercises=[];
+
 
 let normalCount=3;
 
@@ -987,6 +1048,8 @@ function selectMethod(method){
 
  selectedMethod=method;
 
+ selectedExercises=[];
+
 
  document
  .querySelectorAll(".method-btn")
@@ -1014,6 +1077,9 @@ function selectMethod(method){
 
  }
 
+
+ renderExercises();
+
 }
 
 
@@ -1035,9 +1101,9 @@ function renderParts(){
  class="part-btn ${
   selectedPart===part?"active":""
  }"
- onclick="selectPart('${part}')">
+ onclick="selectPart('${esc(part)}')">
 
- ${part}
+ ${esc(part)}
 
  </button>
 
@@ -1050,7 +1116,7 @@ function selectPart(part){
 
  selectedPart=part;
 
- selectedExercise="";
+ selectedExercises=[];
 
  localStorage.setItem(
   "WORKOUT_LAST_PART",
@@ -1074,40 +1140,237 @@ function renderExercises(){
  document.getElementById("exerciseGrid");
 
 
+ const info=
+ document.getElementById("selectionInfo");
+
+
  const list=
  exercises[selectedPart] || [];
 
 
  root.innerHTML=
- list.map(name=>`
+ list.map(name=>{
 
- <button
- class="exercise-btn"
- onclick="selectExercise('${esc(name)}')">
+  const selected=
+   selectedExercises.includes(name);
 
- ${esc(name)}
 
- </button>
+  const number=
+   selectedExercises.indexOf(name);
 
- `).join("");
+
+  return `
+
+  <button
+  class="exercise-btn"
+  style="
+   border-color:
+   ${selected ? "#fff" : "#303030"};
+
+   background:
+   ${selected ? "#fff" : "#202020"};
+
+   color:
+   ${selected ? "#000" : "#fff"};
+  "
+  onclick="selectExercise('${esc(name)}')">
+
+
+  ${
+   selected
+
+   ?
+
+   `<span style="
+    display:inline-block;
+    width:20px;
+    height:20px;
+    line-height:20px;
+    text-align:center;
+    border-radius:50%;
+    background:#000;
+    color:#fff;
+    margin-right:5px;
+    font-size:11px;
+   ">${number+1}</span>`
+
+   :
+
+   ""
+  }
+
+
+  ${esc(name)}
+
+
+  </button>
+
+  `;
+
+ }).join("");
+
+
+ /* 選択状況 */
+
+ if(!selectedExercises.length){
+
+  info.innerHTML=
+  "<strong>種目を選択してください</strong>";
+
+  return;
+
+ }
+
+
+ let limitText="";
+
+
+ if(selectedMethod==="normal"){
+
+  limitText="通常セット：1種目";
+
+ }else if(selectedMethod==="drop"){
+
+  limitText="ドロップセット：1種目";
+
+ }else if(selectedMethod==="superset"){
+
+  limitText="スーパーセット：2種目";
+
+ }else if(selectedMethod==="giant"){
+
+  limitText="ジャイアントセット：3〜5種目";
+
+ }
+
+
+ info.innerHTML=`
+
+ <strong>
+ 選択中：${selectedExercises.length}種目
+ </strong>
+
+ <br>
+
+ ${selectedExercises
+  .map(
+   (name,i)=>
+   `${i+1}. ${esc(name)}`
+  )
+  .join("<br>")}
+
+ <br>
+
+ <span class="small">
+ ${limitText}
+ </span>
+
+ `;
 
 }
 
 
 function selectExercise(name){
 
- selectedExercise=name;
+ /*
+  * 通常セット・ドロップセット
+  * は1種目だけ
+  */
 
- document
- .querySelectorAll(".exercise-btn")
- .forEach(b=>{
+ if(
+  selectedMethod==="normal" ||
+  selectedMethod==="drop"
+ ){
 
-  b.style.borderColor=
-  b.textContent.trim()===name
-   ? "#fff"
-   : "#303030";
+  selectedExercises=[name];
 
- });
+  renderExercises();
+
+  return;
+
+ }
+
+
+ /*
+  * スーパーセット
+  */
+
+ if(
+  selectedMethod==="superset"
+ ){
+
+  const index=
+   selectedExercises.indexOf(name);
+
+
+  if(index>=0){
+
+   selectedExercises.splice(
+    index,
+    1
+   );
+
+  }else{
+
+   if(selectedExercises.length>=2){
+
+    alert(
+     "スーパーセットは2種目まで選択できます"
+    );
+
+    return;
+
+   }
+
+   selectedExercises.push(name);
+
+  }
+
+  renderExercises();
+
+  return;
+
+ }
+
+
+ /*
+  * ジャイアントセット
+  */
+
+ if(
+  selectedMethod==="giant"
+ ){
+
+  const index=
+   selectedExercises.indexOf(name);
+
+
+  if(index>=0){
+
+   selectedExercises.splice(
+    index,
+    1
+   );
+
+  }else{
+
+   if(selectedExercises.length>=5){
+
+    alert(
+     "ジャイアントセットは5種目まで選択できます"
+    );
+
+    return;
+
+   }
+
+   selectedExercises.push(name);
+
+  }
+
+  renderExercises();
+
+ }
 
 }
 
@@ -1126,6 +1389,7 @@ function setNormalCount(count){
  .forEach(b=>
   b.classList.remove("active")
  );
+
 
  document
  .getElementById(
@@ -1173,67 +1437,167 @@ function newSet(){
 
 function addSelectedExercise(){
 
- if(!selectedExercise){
+ /*
+  * 種目未選択
+  */
 
-  alert("種目を選択してください");
+ if(!selectedExercises.length){
+
+  alert(
+   "種目を選択してください"
+  );
 
   return;
 
  }
 
 
- let count=normalCount;
-
-
- if(
-  selectedMethod==="superset"
- ){
-
-  count=2;
-
- }
-
+ /*
+  * 通常セット
+  */
 
  if(
-  selectedMethod==="giant"
+  selectedMethod==="normal" &&
+  selectedExercises.length!==1
  ){
 
-  count=4;
+  alert(
+   "通常セットは1種目を選択してください"
+  );
+
+  return;
 
  }
 
 
- const ex={
+ /*
+  * ドロップセット
+  */
 
-  id:uid(),
-
-  type:selectedMethod,
-
-  part:selectedPart,
-
-  name:selectedExercise,
-
-  sets:[]
-
- };
-
-
- for(
-  let i=0;
-  i<count;
-  i++
+ if(
+  selectedMethod==="drop" &&
+  selectedExercises.length!==1
  ){
 
-  ex.sets.push(newSet());
+  alert(
+   "ドロップセットは1種目を選択してください"
+  );
+
+  return;
 
  }
 
 
- draft.push(ex);
+ /*
+  * スーパーセット
+  */
+
+ if(
+  selectedMethod==="superset" &&
+  selectedExercises.length!==2
+ ){
+
+  alert(
+   "スーパーセットは2種目を選択してください"
+  );
+
+  return;
+
+ }
+
+
+ /*
+  * ジャイアントセット
+  */
+
+ if(
+  selectedMethod==="giant" &&
+  (
+   selectedExercises.length<3 ||
+   selectedExercises.length>5
+  )
+ ){
+
+  alert(
+   "ジャイアントセットは3〜5種目を選択してください"
+  );
+
+  return;
+
+ }
+
+
+ /*
+  * 選択した種目を追加
+  *
+  * スーパーセット・ジャイアントセットは
+  * 同じセット法として記録
+  */
+
+ selectedExercises.forEach(
+ name=>{
+
+  const ex={
+
+   id:uid(),
+
+   type:selectedMethod,
+
+   part:selectedPart,
+
+   name:name,
+
+   sets:[]
+
+  };
+
+
+  /*
+   * セット数
+   *
+   * 通常セット
+   * → 3 or 4セット
+   *
+   * その他
+   * → 3セット
+   */
+
+  const count=
+   selectedMethod==="normal"
+   ? normalCount
+   : 3;
+
+
+  for(
+   let i=0;
+   i<count;
+   i++
+  ){
+
+   ex.sets.push(
+    newSet()
+   );
+
+  }
+
+
+  draft.push(ex);
+
+ });
+
+
+ /*
+  * 選択解除
+  */
+
+ selectedExercises=[];
+
 
  save();
 
  render();
+
+ renderExercises();
 
 }
 
@@ -1341,7 +1705,9 @@ function updateExercise(
 
  if(!e)return;
 
+
  e[key]=value;
+
 
  save();
 
@@ -1372,6 +1738,7 @@ function updateSet(
 
 
  s[key]=value;
+
 
  save();
 
@@ -1407,6 +1774,7 @@ function toggleSet(
 
  s[key]=!s[key];
 
+
  save();
 
  render();
@@ -1433,9 +1801,13 @@ function render(){
  if(!draft.length){
 
   root.innerHTML=`
+
   <div class="card empty">
+
   種目を追加してトレーニング開始
+
   </div>
+
   `;
 
   return;
@@ -1443,9 +1815,199 @@ function render(){
  }
 
 
+ /*
+  * スーパーセット・ジャイアントセットを
+  * 同じグループとして表示するための
+  * グループIDを確認
+  *
+  * 旧データにも対応
+  */
+
+ const groups=[];
+
+ const processed=
+  new Set();
+
+
  draft.forEach(
  (e,index)=>{
 
+  if(processed.has(e.id))return;
+
+
+  if(
+   e.type==="superset" ||
+   e.type==="giant"
+  ){
+
+   const group=
+    draft.filter(
+     x=>
+      x.type===e.type &&
+      x.groupId===e.groupId &&
+      e.groupId
+    );
+
+
+   if(
+    group.length>1
+   ){
+
+    group.forEach(
+     x=>processed.add(x.id)
+    );
+
+
+    groups.push({
+     type:e.type,
+     exercises:group
+    });
+
+
+    return;
+
+   }
+
+  }
+
+
+  processed.add(e.id);
+
+
+  groups.push({
+   type:e.type,
+   exercises:[e]
+  });
+
+ });
+
+
+ groups.forEach(
+ (group,index)=>{
+
+  const typeName={
+
+   normal:"通常",
+
+   drop:"ドロップ",
+
+   superset:"スーパー",
+
+   giant:"ジャイアント"
+
+  }[group.type];
+
+
+  /*
+   * グループ表示
+   */
+
+  if(
+   group.type==="superset" ||
+   group.type==="giant"
+  ){
+
+   let html=`
+
+   <div class="card">
+
+   <div class="row between">
+
+   <div class="title">
+
+   ${index+1}.
+   ${typeName}セット
+
+   <span class="badge">
+
+   ${group.exercises.length}種目
+
+   </span>
+
+   </div>
+
+
+   <button
+   class="btn red"
+   onclick="
+   deleteGroup(
+    ${JSON.stringify(
+     group.exercises.map(e=>e.id)
+    )}
+   )
+   ">
+
+   削除
+
+   </button>
+
+   </div>
+
+   `;
+
+
+   group.exercises.forEach(
+   (e,exerciseIndex)=>{
+
+    html+=renderExerciseHTML(
+     e,
+     exerciseIndex,
+     true
+    );
+
+   });
+
+
+   html+=`
+
+   </div>
+
+   `;
+
+
+   root.insertAdjacentHTML(
+    "beforeend",
+    html
+   );
+
+
+   return;
+
+  }
+
+
+  /*
+   * 通常・ドロップ
+   */
+
+  const e=
+   group.exercises[0];
+
+
+  root.insertAdjacentHTML(
+   "beforeend",
+   renderExerciseHTML(
+    e,
+    index,
+    false
+   )
+  );
+
+ });
+
+}
+
+
+/* =========================
+   RENDER EXERCISE HTML
+========================= */
+
+
+function renderExerciseHTML(
+ e,
+ index,
+ insideGroup
+){
 
  const typeName={
 
@@ -1461,48 +2023,76 @@ function render(){
 
 
  const prev=
- previous(e.name);
+  previous(e.name);
 
 
  let html=`
 
- <div class="card">
+ <div
+ class="${
+  insideGroup
+  ? "group-box"
+  : "card"
+ }">
 
 
  <div class="row between">
 
  <div class="title">
 
- ${index+1}.
+ ${
+  insideGroup
+  ? ""
+  : (index+1)+". "
+ }
+
  ${esc(e.name)}
 
- <span class="badge">
- ${typeName}
- </span>
+ ${
+  insideGroup
+  ? ""
+  : `<span class="badge">
+      ${typeName}
+     </span>`
+ }
 
  </div>
 
 
- <button
- class="btn red"
- onclick="deleteExercise('${e.id}')">
+ ${
+  insideGroup
+  ?
 
- 削除
+  ""
 
- </button>
+  :
+
+  `<button
+   class="btn red"
+   onclick="deleteExercise('${e.id}')">
+
+   削除
+
+   </button>`
+
+ }
+
 
  </div>
 
 
  <div class="sub">
- ${esc(e.part || "")}
- </div>
 
+ ${esc(e.part || "")}
+
+ </div>
 
  `;
 
 
- /* 前回 */
+ /*
+  * 前回
+  */
 
  if(prev){
 
@@ -1526,199 +2116,197 @@ function render(){
  }
 
 
- /* SET */
+ /*
+  * SET
+  */
 
  e.sets.forEach(
  (s,i)=>{
 
-
- html+=`
-
- <div class="set">
-
-
- <div class="setgrid">
-
-
- <div class="setnum">
-
- SET
- <br>
- ${i+1}
-
- </div>
-
-
- <input
- type="number"
- step="0.5"
- placeholder="重量 kg"
- value="${esc(s.weight)}"
-
- oninput="
- updateSet(
- '${e.id}',
- '${s.id}',
- 'weight',
- this.value
- )
- "
- >
-
-
- <input
- type="number"
- placeholder="回数"
- value="${esc(s.reps)}"
-
- oninput="
- updateSet(
- '${e.id}',
- '${s.id}',
- 'reps',
- this.value
- )
- "
- >
-
-
- <button
- class="btn red"
- onclick="
- deleteSet(
- '${e.id}',
- '${s.id}'
- )
- ">
-
- ×
-
- </button>
-
-
- </div>
-
-
- <div class="options">
-
-
- <button
- class="toggle
- ${s.assist?'active':''}"
- onclick="
- toggleSet(
- '${e.id}',
- '${s.id}',
- 'assist'
- )
- ">
-
- 補助
-
- </button>
-
-
- <button
- class="toggle
- ${s.restPause?'active':''}"
- onclick="
- toggleSet(
- '${e.id}',
- '${s.id}',
- 'restPause'
- )
- ">
-
- レストポーズ
-
- </button>
-
-
- <button
- class="toggle
- ${s.cheating?'active':''}"
- onclick="
- toggleSet(
- '${e.id}',
- '${s.id}',
- 'cheating'
- )
- ">
-
- チーティング
-
- </button>
-
-
- </div>
-
-
- `;
-
-
- if(s.restPause){
-
   html+=`
 
-  <div
-  class="row"
-  style="margin-top:7px">
+  <div class="set">
+
+
+  <div class="setgrid">
+
+
+  <div class="setnum">
+
+  SET
+  <br>
+  ${i+1}
+
+  </div>
+
 
   <input
   type="number"
-  placeholder="休憩秒数"
-  value="${esc(s.restSeconds)}"
+  step="0.5"
+  placeholder="重量 kg"
+  value="${esc(s.weight)}"
 
   oninput="
   updateSet(
    '${e.id}',
    '${s.id}',
-   'restSeconds',
+   'weight',
+   this.value
+  )
+  ">
+
+
+  <input
+  type="number"
+  placeholder="回数"
+  value="${esc(s.reps)}"
+
+  oninput="
+  updateSet(
+   '${e.id}',
+   '${s.id}',
+   'reps',
    this.value
   )
   ">
 
 
   <button
-  class="btn"
+  class="btn red"
   onclick="
-  startTimer(
-   ${Number(s.restSeconds)||15}
+  deleteSet(
+   '${e.id}',
+   '${s.id}'
   )
   ">
 
-  タイマー
+  ×
 
   </button>
+
+
+  </div>
+
+
+  <div class="options">
+
+
+  <button
+  class="toggle
+  ${s.assist?'active':''}"
+  onclick="
+  toggleSet(
+   '${e.id}',
+   '${s.id}',
+   'assist'
+  )
+  ">
+
+  補助
+
+  </button>
+
+
+  <button
+  class="toggle
+  ${s.restPause?'active':''}"
+  onclick="
+  toggleSet(
+   '${e.id}',
+   '${s.id}',
+   'restPause'
+  )
+  ">
+
+  レストポーズ
+
+  </button>
+
+
+  <button
+  class="toggle
+  ${s.cheating?'active':''}"
+  onclick="
+  toggleSet(
+   '${e.id}',
+   '${s.id}',
+   'cheating'
+  )
+  ">
+
+  チーティング
+
+  </button>
+
+
+  </div>
+
+
+  `;
+
+
+  if(s.restPause){
+
+   html+=`
+
+   <div
+   class="row"
+   style="margin-top:7px">
+
+   <input
+   type="number"
+   placeholder="休憩秒数"
+   value="${esc(s.restSeconds)}"
+
+   oninput="
+   updateSet(
+    '${e.id}',
+    '${s.id}',
+    'restSeconds',
+    this.value
+   )
+   ">
+
+
+   <button
+   class="btn"
+   onclick="
+   startTimer(
+    ${Number(s.restSeconds)||15}
+   )
+   ">
+
+   タイマー
+
+   </button>
+
+   </div>
+
+   `;
+
+  }
+
+
+  html+=`
+
+  <input
+  style="margin-top:7px"
+  placeholder="メモ"
+  value="${esc(s.note)}"
+
+  oninput="
+  updateSet(
+   '${e.id}',
+   '${s.id}',
+   'note',
+   this.value
+  )
+  ">
+
 
   </div>
 
   `;
-
- }
-
-
- html+=`
-
- <input
- style="margin-top:7px"
- placeholder="メモ"
- value="${esc(s.note)}"
-
- oninput="
- updateSet(
-  '${e.id}',
-  '${s.id}',
-  'note',
-  this.value
- )
- ">
-
-
- </div>
-
- `;
-
 
  });
 
@@ -1747,13 +2335,38 @@ function render(){
  `;
 
 
- root.insertAdjacentHTML(
-  "beforeend",
-  html
+ return html;
+
+}
+
+
+/* =========================
+   DELETE GROUP
+========================= */
+
+
+function deleteGroup(ids){
+
+ if(
+  !confirm(
+   "このセット法の種目をすべて削除しますか？"
+  )
+ ){
+
+  return;
+
+ }
+
+
+ draft=
+ draft.filter(
+  e=>!ids.includes(e.id)
  );
 
 
- });
+ save();
+
+ render();
 
 }
 
@@ -1798,11 +2411,13 @@ function finishWorkout(){
 
  draft=[];
 
+
  save();
 
  render();
 
  renderHistory();
+
 
  alert(
   "トレーニングを保存しました！"
@@ -1848,9 +2463,13 @@ function copyLastWorkout(){
 
   e.sets.forEach(
    s=>{
+
     s.id=uid();
+
     s.weight="";
+
     s.reps="";
+
    }
   );
 
@@ -1861,6 +2480,7 @@ function copyLastWorkout(){
  save();
 
  render();
+
 
  alert(
   "前回メニューをコピーしました！"
@@ -1885,9 +2505,13 @@ function renderHistory(){
  if(!db.history.length){
 
   root.innerHTML=`
+
   <div class="empty">
+
   まだ記録がありません
+
   </div>
+
   `;
 
   renderPR();
@@ -1932,26 +2556,37 @@ function renderHistory(){
  ${esc(e.name)}
  </strong>
 
+
  <div class="small">
+
  ${esc(e.part||"")}
+
  /
- ${e.type==="normal"?"通常":
-   e.type==="drop"?"ドロップ":
-   e.type==="superset"?"スーパー":
-   "ジャイアント"}
+
+ ${
+  e.type==="normal"
+  ?"通常":
+  e.type==="drop"
+  ?"ドロップ":
+  e.type==="superset"
+  ?"スーパー":
+  "ジャイアント"
+ }
+
  </div>
 
 
  ${e.sets.map(
- (s,i)=>`
+  (s,i)=>`
 
- <div class="history-set">
+  <div class="history-set">
 
- SET${i+1}：
- ${s.weight||"-"}kg ×
- ${s.reps||"-"}回
+  SET${i+1}：
 
- </div>
+  ${s.weight||"-"}kg ×
+  ${s.reps||"-"}回
+
+  </div>
 
  `).join("")}
 
@@ -2029,9 +2664,13 @@ function renderPR(){
  if(!names.length){
 
   root.innerHTML=`
+
   <div class="empty">
+
   まだPRがありません
+
   </div>
+
   `;
 
   return;
