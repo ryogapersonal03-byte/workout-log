@@ -47,7 +47,9 @@ header{
  margin-top:3px;
 }
 
-main{padding:14px}
+main{
+ padding:14px;
+}
 
 .card{
  background:#151515;
@@ -63,7 +65,9 @@ main{padding:14px}
  align-items:center;
 }
 
-.between{justify-content:space-between}
+.between{
+ justify-content:space-between;
+}
 
 .title{
  font-weight:900;
@@ -99,7 +103,9 @@ main{padding:14px}
  color:#7cff98;
 }
 
-.btn.full{width:100%}
+.btn.full{
+ width:100%;
+}
 
 input,select,textarea{
  width:100%;
@@ -111,7 +117,9 @@ input,select,textarea{
  outline:none;
 }
 
-input:focus,select:focus,textarea:focus{
+input:focus,
+select:focus,
+textarea:focus{
  border-color:#777;
 }
 
@@ -173,11 +181,6 @@ label{
  color:#000;
 }
 
-.small{
- font-size:11px;
- color:#777;
-}
-
 .prev{
  background:#191919;
  border-radius:10px;
@@ -185,22 +188,14 @@ label{
  margin-top:8px;
  font-size:11px;
  color:#aaa;
-}
-
-.exercise-actions{
- display:flex;
- gap:6px;
- margin-top:9px;
-}
-
-.exercise-actions button{
- flex:1;
+ line-height:1.7;
 }
 
 .empty{
  text-align:center;
  color:#666;
  padding:35px 10px;
+ line-height:1.8;
 }
 
 .bottom{
@@ -236,13 +231,68 @@ label{
  display:none!important;
 }
 
+.method-grid{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:8px;
+}
+
+.method{
+ background:#222;
+ color:#fff;
+ border:1px solid #333;
+ border-radius:13px;
+ padding:15px 8px;
+ text-align:center;
+ font-weight:800;
+}
+
+.exercise-picker{
+ margin-top:14px;
+}
+
+.part-title{
+ font-size:12px;
+ font-weight:900;
+ color:#aaa;
+ margin:15px 0 7px;
+}
+
+.exercise-choice{
+ display:flex;
+ gap:7px;
+ margin-top:6px;
+}
+
+.delete-small{
+ background:#321616;
+ color:#ff7777;
+ border-radius:9px;
+ padding:7px 10px;
+}
+
+.group-exercise{
+ background:#101010;
+ border:1px solid #242424;
+ border-radius:13px;
+ padding:10px;
+ margin-top:8px;
+}
+
+.group-header{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ gap:8px;
+}
+
 .history-item{
  padding:13px 0;
  border-bottom:1px solid #292929;
 }
 
 .history-item:last-child{
- border:0;
+ border-bottom:0;
 }
 
 .history-exercise{
@@ -263,6 +313,12 @@ label{
 
 .history-set:last-child{
  border-bottom:0;
+}
+
+.history-group{
+ margin-top:10px;
+ padding-top:8px;
+ border-top:1px solid #292929;
 }
 
 .pr{
@@ -298,87 +354,21 @@ h2{
  margin:0 0 10px;
 }
 
-.method-grid{
- display:grid;
- grid-template-columns:1fr 1fr;
- gap:8px;
-}
-
-.method{
- background:#222;
- color:#fff;
- border:1px solid #333;
- border-radius:13px;
- padding:15px 8px;
- text-align:center;
- font-weight:800;
-}
-
-.method:hover{
- border-color:#777;
-}
-
-.exercise-picker{
- margin-top:12px;
-}
-
-.part-title{
- font-size:12px;
- font-weight:900;
- color:#aaa;
- margin:15px 0 7px;
-}
-
-.exercise-choice{
- display:flex;
- gap:7px;
- margin-top:6px;
-}
-
-.exercise-choice button:first-child{
- flex:1;
- text-align:left;
-}
-
-.delete-small{
- background:#321616;
- color:#ff7777;
- border-radius:9px;
- padding:7px 10px;
-}
-
-.drop-row{
- display:grid;
- grid-template-columns:34px 1fr 1fr 38px;
- gap:6px;
- align-items:center;
- margin-top:7px;
-}
-
-.group-exercise{
- background:#101010;
- border:1px solid #242424;
- border-radius:13px;
- padding:10px;
- margin-top:8px;
-}
-
-.group-header{
- display:flex;
- justify-content:space-between;
- align-items:center;
- gap:8px;
+.small{
+ font-size:11px;
+ color:#777;
 }
 
 @media(max-width:420px){
- .setgrid,
- .drop-row{
+
+ .setgrid{
   grid-template-columns:30px 1fr 1fr 34px;
  }
 
  .btn{
   padding:10px 10px;
  }
+
 }
 </style>
 </head>
@@ -388,136 +378,223 @@ h2{
 <div class="app">
 
 <header>
- <div class="logo">WORKOUT LOG</div>
+
+ <div class="logo">
+  WORKOUT LOG
+ </div>
+
  <div class="date" id="date"></div>
+
 </header>
+
 
 <main>
 
+<!-- =========================
+     WORKOUT
+========================= -->
+
 <section id="workoutPage">
 
-<div class="card">
- <div class="row between">
-  <div>
-   <div class="title">TODAY'S WORKOUT</div>
-   <div class="sub">前回の記録を確認しながら入力</div>
+ <div class="card">
+
+  <div class="row between">
+
+   <div>
+
+    <div class="title">
+     TODAY'S WORKOUT
+    </div>
+
+    <div class="sub">
+     前回の記録を確認しながら入力
+    </div>
+
+   </div>
+
+   <button
+    class="btn green"
+    onclick="finishWorkout()">
+
+    保存
+
+   </button>
+
   </div>
 
-  <button class="btn green" onclick="finishWorkout()">
-   保存
-  </button>
- </div>
-</div>
-
-<div id="exerciseList"></div>
-
-<!-- セット法選択 -->
-<div class="card">
-
- <h2>セット法を選択</h2>
-
- <div class="method-grid">
-
-  <button class="method"
-   onclick="openExercisePicker('normal')">
-   通常セット
-  </button>
-
-  <button class="method"
-   onclick="openExercisePicker('drop')">
-   ドロップセット
-  </button>
-
-  <button class="method"
-   onclick="openExercisePicker('superset')">
-   スーパーセット
-  </button>
-
-  <button class="method"
-   onclick="openExercisePicker('giant')">
-   ジャイアントセット
-  </button>
-
  </div>
 
- <div id="exercisePicker"></div>
 
-</div>
+ <div id="exerciseList"></div>
 
-<div class="card">
- <button class="btn dark full"
- onclick="copyLastWorkout()">
- 前回メニューをコピー
- </button>
-</div>
+
+ <!-- セット法選択 -->
+
+ <div class="card">
+
+  <h2>
+   セット法を選択
+  </h2>
+
+  <div class="method-grid">
+
+   <button
+    class="method"
+    onclick="openExercisePicker('normal')">
+
+    通常セット
+
+   </button>
+
+   <button
+    class="method"
+    onclick="openExercisePicker('drop')">
+
+    ドロップセット
+
+   </button>
+
+   <button
+    class="method"
+    onclick="openExercisePicker('superset')">
+
+    スーパーセット
+
+   </button>
+
+   <button
+    class="method"
+    onclick="openExercisePicker('giant')">
+
+    ジャイアントセット
+
+   </button>
+
+  </div>
+
+
+  <div id="exercisePicker"></div>
+
+ </div>
+
+
+ <div class="card">
+
+  <button
+   class="btn dark full"
+   onclick="copyLastWorkout()">
+
+   前回メニューをコピー
+
+  </button>
+
+ </div>
 
 </section>
 
 
-<section id="historyPage" class="hidden">
+<!-- =========================
+     HISTORY
+========================= -->
 
-<div class="card">
+<section
+ id="historyPage"
+ class="hidden">
 
- <h2>トレーニング履歴</h2>
+ <div class="card">
 
- <div id="historyList"></div>
+  <h2>
+   トレーニング履歴
+  </h2>
 
-</div>
+  <div id="historyList"></div>
 
-<div class="card">
+ </div>
 
- <h2>種目別PR</h2>
 
- <div id="prList"></div>
+ <div class="card">
 
-</div>
+  <h2>
+   種目別PR
+  </h2>
+
+  <div id="prList"></div>
+
+ </div>
 
 </section>
 
 
-<section id="settingsPage" class="hidden">
+<!-- =========================
+     SETTINGS
+========================= -->
 
-<div class="card">
+<section
+ id="settingsPage"
+ class="hidden">
 
- <h2>種目管理</h2>
+ <div class="card">
 
- <div id="exerciseManager"></div>
+  <h2>
+   種目管理
+  </h2>
 
-</div>
+  <div id="exerciseManager"></div>
 
-<div class="card">
+ </div>
 
- <h2>データ管理</h2>
 
- <button class="btn full" onclick="backup()">
- バックアップ
- </button>
+ <div class="card">
 
- <label>バックアップを復元</label>
+  <h2>
+   データ管理
+  </h2>
 
- <input
-  type="file"
-  accept=".json"
-  onchange="restore(event)"
- >
+  <button
+   class="btn full"
+   onclick="backup()">
 
- <button
-  class="btn red full"
-  style="margin-top:12px"
-  onclick="clearAll()">
-  全データ削除
- </button>
+   バックアップ
 
-</div>
+  </button>
+
+
+  <label>
+   バックアップを復元
+  </label>
+
+  <input
+   type="file"
+   accept=".json"
+   onchange="restore(event)"
+  >
+
+
+  <button
+   class="btn red full"
+   style="margin-top:12px"
+   onclick="clearAll()">
+
+   全データ削除
+
+  </button>
+
+ </div>
 
 </section>
 
 </main>
 
 
-<div id="timer" class="timer hidden">
+<!-- TIMER -->
 
- <span id="timerText">00:00</span>
+<div
+ id="timer"
+ class="timer hidden">
+
+ <span id="timerText">
+  00:00
+ </span>
 
  <button onclick="stopTimer()">
   停止
@@ -526,23 +603,34 @@ h2{
 </div>
 
 
+<!-- BOTTOM -->
+
 <nav class="bottom">
 
  <div class="bottom-inner">
 
-  <button class="active"
+  <button
+   class="active"
    onclick="showPage('workout',this)">
+
    記録
+
   </button>
+
 
   <button
    onclick="showPage('history',this)">
+
    履歴
+
   </button>
+
 
   <button
    onclick="showPage('settings',this)">
+
    設定
+
   </button>
 
  </div>
@@ -554,41 +642,72 @@ h2{
 
 <script>
 
-const KEY="WORKOUT_LOG_V3";
+/* =========================
+   DATABASE
+========================= */
 
-let db=JSON.parse(
- localStorage.getItem(KEY) ||
- '{"history":[],"draft":[],"exerciseLibrary":[]}'
-);
+const KEY="WORKOUT_LOG_V4";
+
+let db;
+
+try{
+
+ db=JSON.parse(
+  localStorage.getItem(KEY) ||
+  "null"
+ );
+
+}catch{
+
+ db=null;
+
+}
+
+
+if(!db){
+
+ db={
+  history:[],
+  draft:[],
+  exerciseLibrary:[]
+ };
+
+}
+
 
 let draft=db.draft || [];
 
-let exerciseLibrary=db.exerciseLibrary || [];
+let exerciseLibrary=
+ db.exerciseLibrary || [];
 
-const parts=[
- "胸",
- "背中",
- "肩",
- "腕",
- "脚",
- "お尻",
- "腹部",
- "その他"
-];
 
-const uid=()=>Date.now().toString(36)+
- Math.random().toString(36).substring(2);
+/* =========================
+   BASIC
+========================= */
 
-const esc=s=>String(s??"").replace(
- /[&<>"']/g,
- m=>({
-  "&":"&amp;",
-  "<":"&lt;",
-  ">":"&gt;",
-  '"':"&quot;",
-  "'":"&#39;"
- }[m])
-);
+const uid=()=>{
+
+ return Date.now().toString(36)+
+ Math.random()
+ .toString(36)
+ .substring(2);
+
+};
+
+
+const esc=s=>
+ String(s??"").replace(
+  /[&<>"']/g,
+  m=>({
+
+   "&":"&amp;",
+   "<":"&lt;",
+   ">":"&gt;",
+   '"':"&quot;",
+   "'":"&#39;"
+
+  }[m])
+ );
 
 
 document.getElementById("date").textContent=
@@ -600,13 +719,19 @@ document.getElementById("date").textContent=
    day:"numeric",
    weekday:"short"
   }
-);
+ );
 
+
+/* =========================
+   SAVE
+========================= */
 
 function save(){
 
  db.draft=draft;
- db.exerciseLibrary=exerciseLibrary;
+
+ db.exerciseLibrary=
+  exerciseLibrary;
 
  localStorage.setItem(
   KEY,
@@ -616,16 +741,99 @@ function save(){
 }
 
 
+/* =========================
+   SET
+========================= */
+
+function newSet(){
+
+ return{
+
+  id:uid(),
+
+  weight:"",
+
+  reps:"",
+
+  assist:false,
+
+  restPause:false,
+
+  restSeconds:"",
+
+  cheating:false,
+
+  note:""
+
+ };
+
+}
+
+
+/* =========================
+   METHOD NAME
+========================= */
+
+function methodName(type){
+
+ return{
+
+  normal:"通常セット",
+
+  drop:"ドロップセット",
+
+  superset:"スーパーセット",
+
+  giant:"ジャイアントセット"
+
+ }[type] || type;
+
+}
+
+
+/* =========================
+   PREVIOUS
+========================= */
+
 function previous(name){
 
  if(!name)return null;
 
- for(const workout of db.history){
+ for(
+  const workout of db.history
+ ){
 
-  for(const ex of workout.exercises || []){
+  for(
+   const ex of workout.exercises || []
+  ){
 
    if(ex.name===name){
+
     return ex;
+
+   }
+
+
+   if(ex.group){
+
+    for(
+     const g of ex.group
+    ){
+
+     if(g.name===name){
+
+      return{
+
+       name:g.name,
+
+       sets:g.sets
+
+      };
+
+     }
+
+    }
+
    }
 
   }
@@ -638,18 +846,65 @@ function previous(name){
 
 
 /* =========================
-   種目ライブラリ
+   PARTS
 ========================= */
 
-function addLibraryExercise(name,part){
+const parts=[
+ "胸",
+ "背中",
+ "肩",
+ "腕",
+ "脚",
+ "お尻",
+ "腹部",
+ "その他"
+];
 
- if(!name.trim())return;
+
+/* =========================
+   LIBRARY
+========================= */
+
+function addLibraryExercise(
+ name,
+ part
+){
+
+ name=name.trim();
+
+ if(!name)return;
+
+ if(
+  exerciseLibrary.some(
+   x=>x.name===name
+  )
+ ){
+
+  return;
+
+ }
 
  exerciseLibrary.push({
+
   id:uid(),
-  name:name.trim(),
-  part
+
+  name:name,
+
+  part:part
+
  });
+
+ save();
+
+}
+
+
+function removeLibraryExercise(id){
+
+ exerciseLibrary=
+ exerciseLibrary.filter(
+  x=>x.id!==id
+ );
 
  save();
 
@@ -658,12 +913,38 @@ function addLibraryExercise(name,part){
 }
 
 
-function removeLibraryExercise(id){
+/* =========================
+   SETTINGS
+========================= */
 
- exerciseLibrary=
- exerciseLibrary.filter(x=>x.id!==id);
+function createLibraryExercise(){
 
- save();
+ const name=
+ document.getElementById(
+  "newExerciseName"
+ ).value;
+
+ const part=
+ document.getElementById(
+  "newExercisePart"
+ ).value;
+
+ if(!name.trim()){
+
+  alert("種目名を入力してください");
+
+  return;
+
+ }
+
+ addLibraryExercise(
+  name,
+  part
+ );
+
+ document.getElementById(
+  "newExerciseName"
+ ).value="";
 
  renderExerciseManager();
 
@@ -673,166 +954,409 @@ function removeLibraryExercise(id){
 function renderExerciseManager(){
 
  const root=
- document.getElementById("exerciseManager");
+ document.getElementById(
+  "exerciseManager"
+ );
 
- if(!exerciseLibrary.length){
+ let html="";
 
-  root.innerHTML=
-  '<div class="empty">登録された種目はありません</div>';
 
-  return;
-
- }
-
- root.innerHTML=parts.map(part=>{
+ parts.forEach(part=>{
 
   const list=
-  exerciseLibrary.filter(x=>x.part===part);
+   exerciseLibrary.filter(
+    x=>x.part===part
+   );
 
-  if(!list.length)return "";
+  if(!list.length)return;
 
-  return`
-
-  <div class="part-title">
-   ${part}
-  </div>
-
-  ${list.map(x=>`
-
-   <div class="exercise-choice">
-
-    <div class="btn dark">
-     ${esc(x.name)}
-    </div>
-
-    <button
-     class="delete-small"
-     onclick="removeLibraryExercise('${x.id}')">
-     ×
-    </button>
-
-   </div>
-
-  `).join("")}
-
-  `;
-
- }).join("")+
-
- `
-
- <label>種目名</label>
-
- <input
-  id="newExerciseName"
-  placeholder="例：スクワット"
- >
-
- <label>部位</label>
-
- <select id="newExercisePart">
-
-  ${parts.map(p=>
-   `<option value="${p}">${p}</option>`
-  ).join("")}
-
- </select>
-
- <button
-  class="btn full"
-  style="margin-top:10px"
-  onclick="createLibraryExercise()">
-  種目を登録
- </button>
-
- `;
-
-}
-
-
-function createLibraryExercise(){
-
- const name=
- document.getElementById("newExerciseName").value;
-
- const part=
- document.getElementById("newExercisePart").value;
-
- addLibraryExercise(name,part);
-
-}
-
-
-/* =========================
-   セット法選択
-========================= */
-
-let selectedMethod=null;
-
-
-function openExercisePicker(type){
-
- selectedMethod=type;
-
- const root=
- document.getElementById("exercisePicker");
-
- root.innerHTML=`
-
- <div class="exercise-picker">
-
-  <div class="sub">
-   ${methodName(type)}の種目を選択
-  </div>
-
-  ${parts.map(part=>{
-
-   const list=
-   exerciseLibrary.filter(x=>x.part===part);
-
-   if(!list.length)return "";
-
-   return`
+  html+=`
 
    <div class="part-title">
     ${part}
    </div>
 
-   ${list.map(x=>`
+  `;
 
-    <button
-     class="btn dark full"
-     style="margin-top:5px"
-     onclick="addExerciseFromLibrary(
-      '${type}',
-      '${x.id}'
-     )">
-     ${esc(x.name)}
-    </button>
 
-   `).join("")}
+  list.forEach(x=>{
+
+   html+=`
+
+    <div
+     class="exercise-choice">
+
+     <div
+      class="btn dark"
+      style="flex:1">
+
+      ${esc(x.name)}
+
+     </div>
+
+     <button
+      class="delete-small"
+      onclick="
+       removeLibraryExercise(
+        '${x.id}'
+       )
+      ">
+
+      ×
+
+     </button>
+
+    </div>
 
    `;
 
-  }).join("")}
+  });
+
+ });
+
+
+ html+=`
+
+  <label>
+   新しい種目
+  </label>
+
+  <input
+   id="newExerciseName"
+   placeholder="例：スクワット"
+  >
+
+  <label>
+   部位
+  </label>
+
+  <select
+   id="newExercisePart">
+
+   ${parts.map(
+    p=>`
+     <option value="${p}">
+      ${p}
+     </option>
+    `
+   ).join("")}
+
+  </select>
+
+  <button
+   class="btn full"
+   style="margin-top:10px"
+   onclick="createLibraryExercise()">
+
+   種目を登録
+
+  </button>
+
+ `;
+
+
+ if(!exerciseLibrary.length){
+
+  html=`
+
+   <div class="empty">
+    登録された種目はありません。<br>
+    下から種目を登録してください。
+   </div>
+
+  `+html;
+
+ }
+
+
+ root.innerHTML=html;
+
+}
+
+
+/* =========================
+   EXERCISE PICKER
+========================= */
+
+function openExercisePicker(type){
+
+ const root=
+ document.getElementById(
+  "exercisePicker"
+ );
+
+ /*
+  ライブラリ
+ */
+
+ const library=
+  exerciseLibrary.slice();
+
+
+ /*
+  履歴から種目取得
+ */
+
+ const historyNames=[];
+
+ (db.history||[]).forEach(
+  workout=>{
+
+   (workout.exercises||[])
+    .forEach(ex=>{
+
+     if(
+      ex.name &&
+      !historyNames.includes(
+       ex.name
+      )
+     ){
+
+      historyNames.push(
+       ex.name
+      );
+
+     }
+
+
+     if(ex.group){
+
+      ex.group.forEach(g=>{
+
+       if(
+        g.name &&
+        !historyNames.includes(
+         g.name
+        )
+       ){
+
+        historyNames.push(
+         g.name
+        );
+
+       }
+
+      });
+
+     }
+
+    });
+
+  }
+ );
+
+
+ /*
+  統合
+ */
+
+ const all=[];
+
+
+ library.forEach(x=>{
+
+  if(
+   !all.some(
+    a=>a.name===x.name
+   )
+  ){
+
+   all.push(x);
+
+  }
+
+ });
+
+
+ historyNames.forEach(name=>{
+
+  if(
+   !all.some(
+    a=>a.name===name
+   )
+  ){
+
+   all.push({
+
+    id:"history_"+uid(),
+
+    name:name,
+
+    part:"過去の種目"
+
+   });
+
+  }
+
+ });
+
+
+ let html=`
+
+  <div class="exercise-picker">
+
+   <div class="sub">
+
+    ${methodName(type)}の種目を選択
+
+   </div>
+
+
+   <label>
+    種目を直接入力
+   </label>
+
+   <div class="row">
+
+    <input
+     id="directExerciseName"
+     placeholder="例：スクワット"
+    >
+
+    <button
+     class="btn"
+     onclick="
+      addDirectExercise(
+       '${type}'
+      )
+     ">
+
+     追加
+
+    </button>
+
+   </div>
+
+ `;
+
+
+ if(!all.length){
+
+  html+=`
+
+   <div class="empty">
+
+    登録された種目がありません。<br>
+    上の入力欄から種目名を入力してください。
+
+   </div>
+
+  `;
+
+ }else{
+
+  parts.forEach(part=>{
+
+   const list=
+    all.filter(
+     x=>x.part===part
+    );
+
+   if(!list.length)return;
+
+   html+=`
+
+    <div class="part-title">
+     ${part}
+    </div>
+
+   `;
+
+
+   list.forEach(x=>{
+
+    html+=`
+
+     <button
+      class="btn dark full"
+      style="margin-top:5px"
+      onclick="
+       addExerciseDirect(
+        '${type}',
+        ${JSON.stringify(x.name)}
+       )
+      ">
+
+      ${esc(x.name)}
+
+     </button>
+
+    `;
+
+   });
+
+  });
+
+
+  /*
+   過去の種目
+  */
+
+  const old=
+   all.filter(
+    x=>x.part==="過去の種目"
+   );
+
+  if(old.length){
+
+   html+=`
+
+    <div class="part-title">
+     過去の種目
+    </div>
+
+   `;
+
+
+   old.forEach(x=>{
+
+    html+=`
+
+     <button
+      class="btn dark full"
+      style="margin-top:5px"
+      onclick="
+       addExerciseDirect(
+        '${type}',
+        ${JSON.stringify(x.name)}
+       )
+      ">
+
+      ${esc(x.name)}
+
+     </button>
+
+    `;
+
+   });
+
+  }
+
+ }
+
+
+ html+=`
 
   <button
    class="btn red full"
    style="margin-top:12px"
    onclick="cancelPicker()">
+
    キャンセル
+
   </button>
 
  </div>
 
  `;
 
+
+ root.innerHTML=html;
+
 }
 
 
 function cancelPicker(){
-
- selectedMethod=null;
 
  document.getElementById(
   "exercisePicker"
@@ -841,52 +1365,88 @@ function cancelPicker(){
 }
 
 
-function methodName(type){
+/* =========================
+   DIRECT EXERCISE
+========================= */
 
- return{
-  normal:"通常セット",
-  drop:"ドロップセット",
-  superset:"スーパーセット",
-  giant:"ジャイアントセット"
- }[type] || type;
+function addDirectExercise(type){
+
+ const input=
+  document.getElementById(
+   "directExerciseName"
+  );
+
+ if(!input)return;
+
+ const name=
+  input.value.trim();
+
+ if(!name){
+
+  alert("種目名を入力してください");
+
+  return;
+
+ }
+
+ addExerciseDirect(
+  type,
+  name
+ );
+
+
+ /*
+  次回から登録種目にする
+ */
+
+ if(
+  !exerciseLibrary.some(
+   x=>x.name===name
+  )
+ ){
+
+  exerciseLibrary.push({
+
+   id:uid(),
+
+   name:name,
+
+   part:"その他"
+
+  });
+
+ }
+
+ save();
 
 }
 
 
 /* =========================
-   種目追加
+   ADD EXERCISE
 ========================= */
 
-function newSet(){
+function addExerciseDirect(
+ type,
+ name
+){
 
- return{
-  id:uid(),
-  weight:"",
-  reps:"",
-  assist:false,
-  restPause:false,
-  restSeconds:"",
-  cheating:false,
-  note:""
- };
-
-}
-
-
-function addExerciseFromLibrary(type,libraryId){
-
- const lib=
- exerciseLibrary.find(x=>x.id===libraryId);
-
- if(!lib)return;
+ if(!name)return;
 
  let ex={
+
   id:uid(),
-  type,
-  name:lib.name,
-  part:lib.part,
+
+  type:type,
+
+  name:name,
+
+  part:"その他",
+
   sets:[]
+
  };
+
 
  if(type==="normal"){
 
@@ -898,7 +1458,12 @@ function addExerciseFromLibrary(type,libraryId){
 
  }
 
+
  if(type==="drop"){
+
+  /*
+   メインセット＋ドロップ
+  */
 
   ex.sets=[
    newSet(),
@@ -907,35 +1472,33 @@ function addExerciseFromLibrary(type,libraryId){
 
  }
 
- if(type==="superset"){
 
-  ex.group=[
-   {
-    id:uid(),
-    name:lib.name,
-    part:lib.part,
-    sets:[newSet(),newSet(),newSet()]
-   }
-  ];
+ if(
+  type==="superset" ||
+  type==="giant"
+ ){
 
-  ex.sets=ex.group[0].sets;
+  ex.group=[{
 
- }
+   id:uid(),
 
- if(type==="giant"){
+   name:name,
 
-  ex.group=[
-   {
-    id:uid(),
-    name:lib.name,
-    part:lib.part,
-    sets:[newSet(),newSet(),newSet()]
-   }
-  ];
+   part:"その他",
 
-  ex.sets=ex.group[0].sets;
+   sets:[
+    newSet(),
+    newSet(),
+    newSet()
+   ]
+
+  }];
+
+  ex.sets=
+   ex.group[0].sets;
 
  }
+
 
  draft.push(ex);
 
@@ -949,40 +1512,25 @@ function addExerciseFromLibrary(type,libraryId){
 
 
 /* =========================
-   通常セット
+   DELETE EXERCISE
 ========================= */
 
-function addSet(eid){
+function deleteExercise(id){
 
- const e=draft.find(x=>x.id===eid);
-
- if(!e)return;
-
- e.sets.push(newSet());
-
- save();
-
- render();
-
-}
-
-
-function deleteSet(eid,sid){
-
- const e=draft.find(x=>x.id===eid);
-
- if(!e)return;
-
- if(e.sets.length<=1){
-
-  alert("最低1セットは残してください");
+ if(
+  !confirm(
+   "この種目を削除しますか？"
+  )
+ ){
 
   return;
 
  }
 
- e.sets=
- e.sets.filter(s=>s.id!==sid);
+ draft=
+  draft.filter(
+   e=>e.id!==id
+  );
 
  save();
 
@@ -992,156 +1540,47 @@ function deleteSet(eid,sid){
 
 
 /* =========================
-   ドロップセット
+   SET UPDATE
 ========================= */
 
-function addDropSet(eid){
+function updateSet(
+ eid,
+ sid,
+ key,
+ value
+){
 
- const e=draft.find(x=>x.id===eid);
-
- if(!e)return;
-
- e.sets.push(newSet());
-
- save();
-
- render();
-
-}
-
-
-function deleteDropSet(eid,sid){
-
- deleteSet(eid,sid);
-
-}
-
-
-/* =========================
-   グループ種目
-========================= */
-
-function addGroupExercise(eid){
-
- const e=draft.find(x=>x.id===eid);
+ const e=
+  draft.find(
+   x=>x.id===eid
+  );
 
  if(!e)return;
 
- const item={
-  id:uid(),
-  name:"",
-  part:"その他",
-  sets:[
-   newSet(),
-   newSet(),
-   newSet()
-  ]
- };
+ const s=
+  e.sets.find(
+   x=>x.id===sid
+  );
 
- e.group.push(item);
+ if(!s)return;
+
+ s[key]=value;
 
  save();
 
- render();
-
 }
 
 
-function deleteGroupExercise(eid,gid){
+function updateExercise(
+ id,
+ key,
+ value
+){
 
- const e=draft.find(x=>x.id===eid);
-
- if(!e)return;
-
- if(e.group.length<=2){
-
-  alert("最低2種目は残してください");
-
-  return;
-
- }
-
- e.group=
- e.group.filter(g=>g.id!==gid);
-
- syncGroupSets(e);
-
- save();
-
- render();
-
-}
-
-
-function addGroupSet(eid,gid){
-
- const e=draft.find(x=>x.id===eid);
-
- if(!e)return;
-
- const g=e.group.find(x=>x.id===gid);
-
- if(!g)return;
-
- g.sets.push(newSet());
-
- syncGroupSets(e);
-
- save();
-
- render();
-
-}
-
-
-function deleteGroupSet(eid,gid,sid){
-
- const e=draft.find(x=>x.id===eid);
-
- if(!e)return;
-
- const g=e.group.find(x=>x.id===gid);
-
- if(!g)return;
-
- if(g.sets.length<=1){
-
-  alert("最低1セットは残してください");
-
-  return;
-
- }
-
- g.sets=
- g.sets.filter(s=>s.id!==sid);
-
- syncGroupSets(e);
-
- save();
-
- render();
-
-}
-
-
-function syncGroupSets(e){
-
- if(e.group && e.group.length){
-
-  e.sets=e.group[0].sets;
-
- }
-
-}
-
-
-/* =========================
-   更新
-========================= */
-
-function updateExercise(id,key,value){
-
- const e=draft.find(x=>x.id===id);
+ const e=
+  draft.find(
+   x=>x.id===id
+  );
 
  if(!e)return;
 
@@ -1152,38 +1591,302 @@ function updateExercise(id,key,value){
 }
 
 
-function updateGroupExercise(eid,gid,key,value){
+/* =========================
+   TOGGLE
+========================= */
 
- const e=draft.find(x=>x.id===eid);
+function toggleSet(
+ eid,
+ sid,
+ key
+){
+
+ const e=
+  draft.find(
+   x=>x.id===eid
+  );
 
  if(!e)return;
 
- const g=e.group.find(x=>x.id===gid);
+ const s=
+  e.sets.find(
+   x=>x.id===sid
+  );
+
+ if(!s)return;
+
+ s[key]=!s[key];
+
+ save();
+
+ render();
+
+}
+
+
+/* =========================
+   SET ADD / DELETE
+========================= */
+
+function addSet(eid){
+
+ const e=
+  draft.find(
+   x=>x.id===eid
+  );
+
+ if(!e)return;
+
+ e.sets.push(
+  newSet()
+ );
+
+ save();
+
+ render();
+
+}
+
+
+function deleteSet(
+ eid,
+ sid
+){
+
+ const e=
+  draft.find(
+   x=>x.id===eid
+  );
+
+ if(!e)return;
+
+ if(e.sets.length<=1){
+
+  alert(
+   "最低1セットは残してください"
+  );
+
+  return;
+
+ }
+
+ e.sets=
+  e.sets.filter(
+   s=>s.id!==sid
+  );
+
+ save();
+
+ render();
+
+}
+
+
+function addDropSet(eid){
+
+ addSet(eid);
+
+}
+
+
+/* =========================
+   GROUP EXERCISE
+========================= */
+
+function syncGroupSets(e){
+
+ if(
+  e.group &&
+  e.group.length
+ ){
+
+  e.sets=
+   e.group[0].sets;
+
+ }
+
+}
+
+
+function addGroupExercise(
+ eid
+){
+
+ const e=
+  draft.find(
+   x=>x.id===eid
+  );
+
+ if(!e)return;
+
+ e.group.push({
+
+  id:uid(),
+
+  name:"",
+
+  part:"その他",
+
+  sets:[
+   newSet(),
+   newSet(),
+   newSet()
+  ]
+
+ });
+
+ syncGroupSets(e);
+
+ save();
+
+ render();
+
+}
+
+
+function deleteGroupExercise(
+ eid,
+ gid
+){
+
+ const e=
+  draft.find(
+   x=>x.id===eid
+  );
+
+ if(!e)return;
+
+ if(e.group.length<=1){
+
+  alert(
+   "最低1種目は残してください"
+  );
+
+  return;
+
+ }
+
+ e.group=
+  e.group.filter(
+   g=>g.id!==gid
+  );
+
+ syncGroupSets(e);
+
+ save();
+
+ render();
+
+}
+
+
+function addGroupSet(
+ eid,
+ gid
+){
+
+ const e=
+  draft.find(
+   x=>x.id===eid
+  );
+
+ if(!e)return;
+
+ const g=
+  e.group.find(
+   x=>x.id===gid
+  );
+
+ if(!g)return;
+
+ g.sets.push(
+  newSet()
+ );
+
+ syncGroupSets(e);
+
+ save();
+
+ render();
+
+}
+
+
+function deleteGroupSet(
+ eid,
+ gid,
+ sid
+){
+
+ const e=
+  draft.find(
+   x=>x.id===eid
+  );
+
+ if(!e)return;
+
+ const g=
+  e.group.find(
+   x=>x.id===gid
+  );
+
+ if(!g)return;
+
+ if(g.sets.length<=1){
+
+  alert(
+   "最低1セットは残してください"
+  );
+
+  return;
+
+ }
+
+ g.sets=
+  g.sets.filter(
+   s=>s.id!==sid
+  );
+
+ syncGroupSets(e);
+
+ save();
+
+ render();
+
+}
+
+
+function updateGroupExercise(
+ eid,
+ gid,
+ key,
+ value
+){
+
+ const e=
+  draft.find(
+   x=>x.id===eid
+  );
+
+ if(!e)return;
+
+ const g=
+  e.group.find(
+   x=>x.id===gid
+  );
 
  if(!g)return;
 
  g[key]=value;
 
- if(key==="name"){
-  e.name=g.name;
+ if(
+  !e.name &&
+  value
+ ){
+
+  e.name=value;
+
  }
-
- save();
-
-}
-
-
-function updateSet(eid,sid,key,value){
-
- const e=draft.find(x=>x.id===eid);
-
- if(!e)return;
-
- const s=e.sets.find(x=>x.id===sid);
-
- if(!s)return;
-
- s[key]=value;
 
  save();
 
@@ -1198,15 +1901,24 @@ function updateGroupSet(
  value
 ){
 
- const e=draft.find(x=>x.id===eid);
+ const e=
+  draft.find(
+   x=>x.id===eid
+  );
 
  if(!e)return;
 
- const g=e.group.find(x=>x.id===gid);
+ const g=
+  e.group.find(
+   x=>x.id===gid
+  );
 
  if(!g)return;
 
- const s=g.sets.find(x=>x.id===sid);
+ const s=
+  g.sets.find(
+   x=>x.id===sid
+  );
 
  if(!s)return;
 
@@ -1217,72 +1929,8 @@ function updateGroupSet(
 }
 
 
-function toggleSet(eid,sid,key){
-
- const e=draft.find(x=>x.id===eid);
-
- if(!e)return;
-
- const s=e.sets.find(x=>x.id===sid);
-
- if(!s)return;
-
- s[key]=!s[key];
-
- save();
-
- render();
-
-}
-
-
-function toggleGroupSet(
- eid,gid,sid,key
-){
-
- const e=draft.find(x=>x.id===eid);
-
- if(!e)return;
-
- const g=e.group.find(x=>x.id===gid);
-
- if(!g)return;
-
- const s=g.sets.find(x=>x.id===sid);
-
- if(!s)return;
-
- s[key]=!s[key];
-
- save();
-
- render();
-
-}
-
-
 /* =========================
-   種目削除
-========================= */
-
-function deleteExercise(id){
-
- if(!confirm("この種目を削除しますか？")){
-  return;
- }
-
- draft=
- draft.filter(e=>e.id!==id);
-
- save();
-
- render();
-
-}
-
-
-/* =========================
-   セット表示
+   RENDER SET
 ========================= */
 
 function renderSet(
@@ -1298,8 +1946,12 @@ function renderSet(
   <div class="setgrid">
 
    <div class="setnum">
-    SET<br>${i+1}
+
+    SET<br>
+    ${i+1}
+
    </div>
+
 
    <input
     type="number"
@@ -1316,6 +1968,7 @@ function renderSet(
     "
    >
 
+
    <input
     type="number"
     placeholder="回数"
@@ -1330,6 +1983,7 @@ function renderSet(
     "
    >
 
+
    <button
     class="btn red"
     onclick="
@@ -1338,10 +1992,13 @@ function renderSet(
       '${s.id}'
      )
     ">
+
     ×
+
    </button>
 
   </div>
+
 
   <div class="options">
 
@@ -1354,8 +2011,11 @@ function renderSet(
       'assist'
      )
     ">
+
     補助
+
    </button>
+
 
    <button
     class="toggle ${s.restPause?'active':''}"
@@ -1366,8 +2026,11 @@ function renderSet(
       'restPause'
      )
     ">
+
     レストポーズ
+
    </button>
+
 
    <button
     class="toggle ${s.cheating?'active':''}"
@@ -1378,42 +2041,56 @@ function renderSet(
       'cheating'
      )
     ">
+
     チーティング
+
    </button>
 
   </div>
 
-  ${s.restPause?`
 
-   <div class="row" style="margin-top:7px">
+  ${
+   s.restPause
+   ?
+   `
 
-    <input
-     type="number"
-     placeholder="休憩秒数"
-     value="${esc(s.restSeconds)}"
-     oninput="
-      updateSet(
-       '${e.id}',
-       '${s.id}',
-       'restSeconds',
-       this.value
-      )
-     "
-    >
+    <div
+     class="row"
+     style="margin-top:7px">
 
-    <button
-     class="btn"
-     onclick="
-      startTimer(
-       ${Number(s.restSeconds)||15}
-      )
-     ">
-     タイマー
-    </button>
+     <input
+      type="number"
+      placeholder="休憩秒数"
+      value="${esc(s.restSeconds)}"
+      oninput="
+       updateSet(
+        '${e.id}',
+        '${s.id}',
+        'restSeconds',
+        this.value
+       )
+      "
+     >
 
-   </div>
+     <button
+      class="btn"
+      onclick="
+       startTimer(
+        ${Number(s.restSeconds)||15}
+       )
+      ">
 
-  `:""}
+      タイマー
+
+     </button>
+
+    </div>
+
+   `
+   :
+   ""
+  }
+
 
   <input
    style="margin-top:7px"
@@ -1437,10 +2114,13 @@ function renderSet(
 
 
 /* =========================
-   グループ表示
+   RENDER GROUP
 ========================= */
 
-function renderGroupExercise(e,g){
+function renderGroupExercise(
+ e,
+ g
+){
 
  return`
 
@@ -1461,6 +2141,7 @@ function renderGroupExercise(e,g){
     "
    >
 
+
    <button
     class="delete-small"
     onclick="
@@ -1469,69 +2150,26 @@ function renderGroupExercise(e,g){
       '${g.id}'
      )
     ">
+
     ×
+
    </button>
 
   </div>
 
-  ${g.sets.map((s,i)=>`
 
-   <div class="set">
+  ${
+   g.sets.map(
+    (s,i)=>
+     renderGroupSet(
+      e,
+      g,
+      s,
+      i
+     )
+   ).join("")
+  }
 
-    <div class="setgrid">
-
-     <div class="setnum">
-      SET<br>${i+1}
-     </div>
-
-     <input
-      type="number"
-      step="0.5"
-      placeholder="重量 kg"
-      value="${esc(s.weight)}"
-      oninput="
-       updateGroupSet(
-        '${e.id}',
-        '${g.id}',
-        '${s.id}',
-        'weight',
-        this.value
-       )
-      "
-     >
-
-     <input
-      type="number"
-      placeholder="回数"
-      value="${esc(s.reps)}"
-      oninput="
-       updateGroupSet(
-        '${e.id}',
-        '${g.id}',
-        '${s.id}',
-        'reps',
-        this.value
-       )
-      "
-     >
-
-     <button
-      class="btn red"
-      onclick="
-       deleteGroupSet(
-        '${e.id}',
-        '${g.id}',
-        '${s.id}'
-       )
-      ">
-      ×
-     </button>
-
-    </div>
-
-   </div>
-
-  `).join("")}
 
   <button
    class="btn dark full"
@@ -1542,7 +2180,9 @@ function renderGroupExercise(e,g){
      '${g.id}'
     )
    ">
+
    ＋ セット
+
   </button>
 
  </div>
@@ -1552,199 +2192,340 @@ function renderGroupExercise(e,g){
 }
 
 
+function renderGroupSet(
+ e,
+ g,
+ s,
+ i
+){
+
+ return`
+
+ <div class="set">
+
+  <div class="setgrid">
+
+   <div class="setnum">
+
+    SET<br>
+    ${i+1}
+
+   </div>
+
+
+   <input
+    type="number"
+    step="0.5"
+    placeholder="重量 kg"
+    value="${esc(s.weight)}"
+    oninput="
+     updateGroupSet(
+      '${e.id}',
+      '${g.id}',
+      '${s.id}',
+      'weight',
+      this.value
+     )
+    "
+   >
+
+
+   <input
+    type="number"
+    placeholder="回数"
+    value="${esc(s.reps)}"
+    oninput="
+     updateGroupSet(
+      '${e.id}',
+      '${g.id}',
+      '${s.id}',
+      'reps',
+      this.value
+     )
+    "
+   >
+
+
+   <button
+    class="btn red"
+    onclick="
+     deleteGroupSet(
+      '${e.id}',
+      '${g.id}',
+      '${s.id}'
+     )
+    ">
+
+    ×
+
+   </button>
+
+  </div>
+
+ </div>
+
+ `;
+
+}
+
+
 /* =========================
-   メイン描画
+   RENDER
 ========================= */
 
 function render(){
 
  const root=
- document.getElementById("exerciseList");
+  document.getElementById(
+   "exerciseList"
+  );
 
  root.innerHTML="";
 
+
  if(!draft.length){
 
-  root.innerHTML=
-  '<div class="card empty">セット法を選択して種目を追加してください</div>';
+  root.innerHTML=`
+
+   <div class="card empty">
+
+    セット法を選択して<br>
+    種目を追加してください
+
+   </div>
+
+  `;
 
   return;
 
  }
 
 
- draft.forEach((e,index)=>{
+ draft.forEach(
+  (e,index)=>{
 
-  const prev=
-  previous(e.name);
+   const prev=
+    previous(e.name);
 
-  let html=`
 
-  <div class="card">
+   let html=`
 
-   <div class="row between">
+    <div class="card">
 
-    <div class="title">
-     ${index+1}. ${esc(e.name || "種目名")}
-     <span class="badge">
-      ${methodName(e.type)}
-     </span>
+     <div class="row between">
+
+      <div class="title">
+
+       ${index+1}.
+       ${esc(e.name||"種目名")}
+
+       <span class="badge">
+
+        ${methodName(e.type)}
+
+       </span>
+
+      </div>
+
+
+      <button
+       class="btn red"
+       onclick="
+        deleteExercise(
+         '${e.id}'
+        )
+       ">
+
+       削除
+
+      </button>
+
+     </div>
+
+   `;
+
+
+   /*
+    前回
+   */
+
+   if(
+    prev &&
+    (
+     e.type==="normal" ||
+     e.type==="drop"
+    )
+   ){
+
+    html+=`
+
+     <div class="prev">
+
+      前回：
+
+      ${prev.sets.map(
+       s=>
+       `${s.weight||"-"}kg × ${s.reps||"-"}回`
+      ).join(" / ")}
+
+     </div>
+
+    `;
+
+   }
+
+
+   /*
+    通常・ドロップ
+   */
+
+   if(
+    e.type==="normal" ||
+    e.type==="drop"
+   ){
+
+    html+=`
+
+     <label>
+      種目名
+     </label>
+
+     <input
+      value="${esc(e.name)}"
+      oninput="
+       updateExercise(
+        '${e.id}',
+        'name',
+        this.value
+       )
+      "
+     >
+
+    `;
+
+
+    e.sets.forEach(
+     (s,i)=>{
+
+      html+=
+       renderSet(
+        e,
+        s,
+        i
+       );
+
+     }
+    );
+
+
+    html+=`
+
+     <button
+      class="btn dark full"
+      style="margin-top:9px"
+      onclick="
+       addSet(
+        '${e.id}'
+       )
+      ">
+
+      ${
+       e.type==="drop"
+       ?
+       "＋ ドロップ追加"
+       :
+       "＋ セット"
+      }
+
+     </button>
+
+    `;
+
+   }
+
+
+   /*
+    スーパー・ジャイアント
+   */
+
+   if(
+    e.type==="superset" ||
+    e.type==="giant"
+   ){
+
+    html+=`
+
+     <div class="sub">
+
+      種目を追加・削除できます
+
+     </div>
+
+    `;
+
+
+    e.group.forEach(
+     g=>{
+
+      html+=
+       renderGroupExercise(
+        e,
+        g
+       );
+
+     }
+    );
+
+
+    html+=`
+
+     <button
+      class="btn dark full"
+      style="margin-top:9px"
+      onclick="
+       addGroupExercise(
+        '${e.id}'
+       )
+      ">
+
+      ＋ 種目追加
+
+     </button>
+
+    `;
+
+   }
+
+
+   html+=`
+
     </div>
 
-    <button
-     class="btn red"
-     onclick="
-      deleteExercise('${e.id}')
-     ">
-     削除
-    </button>
-
-   </div>
-  `;
-
-
-  if(e.type==="normal" || e.type==="drop"){
-
-   if(prev){
-
-    html+=`
-
-    <div class="prev">
-
-     前回：
-     ${prev.sets.map(s=>
-      `${s.weight||"-"}kg × ${s.reps||"-"}回`
-     ).join(" / ")}
-
-    </div>
-
-    `;
-
-   }
-
-   html+=`
-
-   <label>種目名</label>
-
-   <input
-    value="${esc(e.name)}"
-    oninput="
-     updateExercise(
-      '${e.id}',
-      'name',
-      this.value
-     )
-    "
-   >
-
    `;
 
-   e.sets.forEach((s,i)=>{
 
-    html+=renderSet(e,s,i);
-
-   });
-
-
-   if(e.type==="normal"){
-
-    html+=`
-
-    <button
-     class="btn dark full"
-     style="margin-top:9px"
-     onclick="
-      addSet('${e.id}')
-     ">
-     ＋ セット
-    </button>
-
-    `;
-
-   }
-
-
-   if(e.type==="drop"){
-
-    html+=`
-
-    <button
-     class="btn dark full"
-     style="margin-top:9px"
-     onclick="
-      addDropSet('${e.id}')
-     ">
-     ＋ ドロップ追加
-    </button>
-
-    `;
-
-   }
+   root.insertAdjacentHTML(
+    "beforeend",
+    html
+   );
 
   }
-
-
-  if(
-   e.type==="superset" ||
-   e.type==="giant"
-  ){
-
-   html+=`
-
-   <div class="sub">
-    種目を自由に追加・削除できます
-   </div>
-
-   `;
-
-   e.group.forEach(g=>{
-
-    html+=renderGroupExercise(e,g);
-
-   });
-
-
-   html+=`
-
-   <button
-    class="btn dark full"
-    style="margin-top:9px"
-    onclick="
-     addGroupExercise('${e.id}')
-    ">
-    ＋ 種目追加
-   </button>
-
-   `;
-
-  }
-
-
-  html+=`
-
-  </div>
-
-  `;
-
-  root.insertAdjacentHTML(
-   "beforeend",
-   html
-  );
-
- });
+ );
 
 }
 
 
 /* =========================
-   保存
+   FINISH
 ========================= */
 
 function finishWorkout(){
 
  if(!draft.length){
 
-  alert("種目を追加してください");
+  alert(
+   "種目を追加してください"
+  );
 
   return;
 
@@ -1752,13 +2533,26 @@ function finishWorkout(){
 
 
  const workout={
+
   id:uid(),
-  date:new Date().toISOString(),
+
+  date:
+   new Date().toISOString(),
+
   exercises:
-   JSON.parse(JSON.stringify(draft))
+   JSON.parse(
+    JSON.stringify(
+     draft
+    )
+   )
+
  };
 
- db.history.unshift(workout);
+
+ db.history.unshift(
+  workout
+ );
+
 
  draft=[];
 
@@ -1768,108 +2562,161 @@ function finishWorkout(){
 
  renderHistory();
 
- alert("トレーニングを保存しました！");
+ alert(
+  "トレーニングを保存しました！"
+ );
 
 }
 
 
 /* =========================
-   前回コピー
+   COPY LAST
 ========================= */
 
 function copyLastWorkout(){
 
- if(!db.history.length){
+ if(
+  !db.history ||
+  !db.history.length
+ ){
 
-  alert("まだ前回の記録がありません");
+  alert(
+   "まだ前回の記録がありません"
+  );
 
   return;
 
  }
 
- const last=db.history[0];
+
+ const last=
+  db.history[0];
+
 
  draft=
- JSON.parse(
-  JSON.stringify(last.exercises)
+  JSON.parse(
+   JSON.stringify(
+    last.exercises
+   )
+  );
+
+
+ draft.forEach(
+  e=>{
+
+   e.id=uid();
+
+
+   if(e.sets){
+
+    e.sets.forEach(
+     s=>{
+
+      s.id=uid();
+
+      s.weight="";
+
+      s.reps="";
+
+      s.note="";
+
+     }
+    );
+
+   }
+
+
+   if(e.group){
+
+    e.group.forEach(
+     g=>{
+
+      g.id=uid();
+
+      g.sets.forEach(
+       s=>{
+
+        s.id=uid();
+
+        s.weight="";
+
+        s.reps="";
+
+        s.note="";
+
+       }
+      );
+
+     }
+    );
+
+
+    syncGroupSets(e);
+
+   }
+
+  }
  );
 
- draft.forEach(e=>{
-
-  e.id=uid();
-
-  if(e.sets){
-
-   e.sets.forEach(s=>{
-    s.id=uid();
-
-    s.weight="";
-    s.reps="";
-    s.note="";
-   });
-
-  }
-
-  if(e.group){
-
-   e.group.forEach(g=>{
-
-    g.id=uid();
-
-    g.sets.forEach(s=>{
-
-     s.id=uid();
-     s.weight="";
-     s.reps="";
-     s.note="";
-
-    });
-
-   });
-
-   syncGroupSets(e);
-
-  }
-
- });
 
  save();
 
  render();
 
- alert("前回メニューをコピーしました！");
+ alert(
+  "前回メニューをコピーしました！"
+ );
 
 }
 
 
 /* =========================
-   履歴
+   HISTORY
 ========================= */
 
-function historySetHTML(s,i){
+function historySetHTML(
+ s,
+ i
+){
 
  return`
 
- <div class="history-set">
+  <div class="history-set">
 
-  <span>
-   SET${i+1}
-  </span>
+   <span>
+    SET${i+1}
+   </span>
 
-  <b>
-   ${s.weight ? s.weight+"kg" : "-"}
-   ×
-   ${s.reps ? s.reps+"回" : "-"}
-  </b>
+   <b>
 
- </div>
+    ${s.weight
+      ? s.weight+"kg"
+      : "-"
+    }
+
+    ×
+
+    ${s.reps
+      ? s.reps+"回"
+      : "-"
+    }
+
+   </b>
+
+  </div>
 
  `;
 
 }
 
 
-function historyExerciseHTML(e){
+function historyExerciseHTML(
+ e
+){
+
+ /*
+  スーパー・ジャイアント
+ */
 
  if(
   e.type==="superset" ||
@@ -1878,60 +2725,104 @@ function historyExerciseHTML(e){
 
   return`
 
-  <div class="history-exercise">
+   <div
+    class="history-exercise">
 
-   <div class="row between">
+    <div class="row between">
 
-    <b>${esc(e.name||"セット")}</b>
+     <b>
+      ${esc(e.name||"セット")}
+     </b>
 
-    <span class="badge">
-     ${methodName(e.type)}
-    </span>
+     <span class="badge">
 
-   </div>
+      ${methodName(e.type)}
 
-   ${e.group.map(g=>`
-
-    <div style="margin-top:10px">
-
-     <div class="small">
-      ${esc(g.name||"種目名")}
-     </div>
-
-     ${g.sets.map((s,i)=>
-      historySetHTML(s,i)
-     ).join("")}
+     </span>
 
     </div>
 
-   `).join("")}
 
-  </div>
+    ${
+     (e.group||[]).map(
+      g=>`
+
+       <div
+        class="history-group">
+
+        <div class="small">
+
+         ${esc(
+          g.name||
+          "種目名"
+         )}
+
+        </div>
+
+
+        ${
+         g.sets.map(
+          (s,i)=>
+           historySetHTML(
+            s,
+            i
+           )
+         ).join("")
+        }
+
+       </div>
+
+      `
+     ).join("")
+    }
+
+   </div>
 
   `;
 
  }
 
 
+ /*
+  通常・ドロップ
+ */
+
  return`
 
- <div class="history-exercise">
+  <div
+   class="history-exercise">
 
-  <div class="row between">
+   <div class="row between">
 
-   <b>${esc(e.name||"名称未設定")}</b>
+    <b>
 
-   <span class="badge">
-    ${methodName(e.type)}
-   </span>
+     ${esc(
+      e.name||
+      "名称未設定"
+     )}
+
+    </b>
+
+    <span class="badge">
+
+     ${methodName(e.type)}
+
+    </span>
+
+   </div>
+
+
+   ${
+    (e.sets||[]).map(
+     (s,i)=>
+      historySetHTML(
+       s,
+       i
+      )
+    ).join("")
+   }
 
   </div>
-
-  ${e.sets.map((s,i)=>
-   historySetHTML(s,i)
-  ).join("")}
-
- </div>
 
  `;
 
@@ -1941,12 +2832,18 @@ function historyExerciseHTML(e){
 function renderHistory(){
 
  const root=
- document.getElementById("historyList");
+  document.getElementById(
+   "historyList"
+  );
 
- if(!db.history.length){
+
+ if(
+  !db.history ||
+  !db.history.length
+ ){
 
   root.innerHTML=
-  '<div class="empty">まだ記録がありません</div>';
+   '<div class="empty">まだ記録がありません</div>';
 
   renderPR();
 
@@ -1956,33 +2853,49 @@ function renderHistory(){
 
 
  root.innerHTML=
- db.history.map(w=>{
+  db.history.map(
+   w=>{
 
-  const date=
-  new Date(w.date).toLocaleDateString(
-   "ja-JP",
-   {
-    year:"numeric",
-    month:"short",
-    day:"numeric"
+    const date=
+     new Date(
+      w.date
+     ).toLocaleDateString(
+      "ja-JP",
+      {
+       year:"numeric",
+       month:"short",
+       day:"numeric"
+      }
+     );
+
+
+    return`
+
+     <div
+      class="history-item">
+
+      <b>
+       ${date}
+      </b>
+
+      ${
+       (w.exercises||[])
+       .map(
+        e=>
+         historyExerciseHTML(
+          e
+         )
+       )
+       .join("")
+      }
+
+     </div>
+
+    `;
+
    }
-  );
+  ).join("");
 
-  return`
-
-  <div class="history-item">
-
-   <b>${date}</b>
-
-   ${w.exercises.map(e=>
-    historyExerciseHTML(e)
-   ).join("")}
-
-  </div>
-
-  `;
-
- }).join("");
 
  renderPR();
 
@@ -1996,75 +2909,99 @@ function renderHistory(){
 function renderPR(){
 
  const root=
- document.getElementById("prList");
+  document.getElementById(
+   "prList"
+  );
 
  const prs={};
 
- db.history.forEach(w=>{
 
-  w.exercises.forEach(e=>{
+ (db.history||[]).forEach(
+  w=>{
 
-   if(
-    e.type==="superset" ||
-    e.type==="giant"
-   ){
-
-    (e.group||[]).forEach(g=>{
-
-     if(!g.name)return;
-
-     g.sets.forEach(s=>{
-
-      const weight=
-       Number(s.weight)||0;
-
-      if(
-       !prs[g.name] ||
-       weight>prs[g.name]
-      ){
-
-       prs[g.name]=weight;
-
-      }
-
-     });
-
-    });
-
-   }else{
-
-    if(!e.name)return;
-
-    e.sets.forEach(s=>{
-
-     const weight=
-      Number(s.weight)||0;
+   (w.exercises||[])
+   .forEach(
+    e=>{
 
      if(
-      !prs[e.name] ||
-      weight>prs[e.name]
+      e.type==="superset" ||
+      e.type==="giant"
      ){
 
-      prs[e.name]=weight;
+      (e.group||[])
+      .forEach(
+       g=>{
+
+        if(!g.name)return;
+
+        (g.sets||[])
+        .forEach(
+         s=>{
+
+          const weight=
+           Number(
+            s.weight
+           )||0;
+
+          if(
+           !prs[g.name] ||
+           weight>prs[g.name]
+          ){
+
+           prs[g.name]=
+            weight;
+
+          }
+
+         }
+        );
+
+       }
+      );
+
+     }else{
+
+      if(!e.name)return;
+
+      (e.sets||[])
+      .forEach(
+       s=>{
+
+        const weight=
+         Number(
+          s.weight
+         )||0;
+
+        if(
+         !prs[e.name] ||
+         weight>prs[e.name]
+        ){
+
+         prs[e.name]=
+          weight;
+
+        }
+
+       }
+      );
 
      }
 
-    });
+    }
+   );
 
-   }
-
-  });
-
- });
+  }
+ );
 
 
  const names=
- Object.keys(prs);
+  Object.keys(prs);
+
 
  if(!names.length){
 
   root.innerHTML=
-  '<div class="empty">まだPRがありません</div>';
+   '<div class="empty">まだPRがありません</div>';
 
   return;
 
@@ -2072,81 +3009,120 @@ function renderPR(){
 
 
  root.innerHTML=
- names.map(name=>`
+  names.map(
+   name=>`
 
-  <div class="pr">
+    <div class="pr">
 
-   <span>${esc(name)}</span>
+     <span>
+      ${esc(name)}
+     </span>
 
-   <b>${prs[name]} kg</b>
+     <b>
+      ${prs[name]} kg
+     </b>
 
-  </div>
+    </div>
 
- `).join("");
+   `
+  ).join("");
 
 }
 
 
 /* =========================
-   ページ切替
+   PAGE
 ========================= */
 
-function showPage(name,button){
+function showPage(
+ name,
+ button
+){
 
  [
   "workout",
   "history",
   "settings"
- ].forEach(x=>{
+ ].forEach(
+  x=>{
 
-  document
-   .getElementById(x+"Page")
-   .classList.toggle(
-    "hidden",
-    x!==name
-   );
+   document
+    .getElementById(
+     x+"Page"
+    )
+    .classList.toggle(
+     "hidden",
+     x!==name
+    );
 
- });
+  }
+ );
+
 
  document
-  .querySelectorAll(".bottom button")
-  .forEach(b=>
-   b.classList.remove("active")
+  .querySelectorAll(
+   ".bottom button"
+  )
+  .forEach(
+   b=>
+    b.classList.remove(
+     "active"
+    )
   );
 
- button.classList.add("active");
+
+ button.classList.add(
+  "active"
+ );
+
 
  if(name==="history"){
+
   renderHistory();
+
  }
 
+
  if(name==="settings"){
+
   renderExerciseManager();
+
  }
 
 }
 
 
 /* =========================
-   タイマー
+   TIMER
 ========================= */
 
 let timerInterval=null;
+
 let timerEnd=0;
 
 
-function startTimer(seconds){
+function startTimer(
+ seconds
+){
 
  stopTimer();
 
  timerEnd=
-  Date.now()+seconds*1000;
+  Date.now()+
+  seconds*1000;
+
 
  document
-  .getElementById("timer")
-  .classList.remove("hidden");
+  .getElementById(
+   "timer"
+  )
+  .classList.remove(
+   "hidden"
+  );
+
 
  updateTimer();
+
 
  timerInterval=
   setInterval(
@@ -2162,36 +3138,57 @@ function updateTimer(){
  const remaining=
   Math.max(
    0,
-   timerEnd-Date.now()
+   timerEnd-
+   Date.now()
   );
+
 
  const sec=
   Math.ceil(
    remaining/1000
   );
 
+
  const m=
   String(
-   Math.floor(sec/60)
-  ).padStart(2,"0");
+   Math.floor(
+    sec/60
+   )
+  ).padStart(
+   2,
+   "0"
+  );
+
 
  const s=
   String(
    sec%60
-  ).padStart(2,"0");
+  ).padStart(
+   2,
+   "0"
+  );
+
 
  document
-  .getElementById("timerText")
+  .getElementById(
+   "timerText"
+  )
   .textContent=
   `${m}:${s}`;
 
- if(remaining<=0){
+
+ if(
+  remaining<=0
+ ){
 
   clearInterval(
    timerInterval
   );
 
-  if(navigator.vibrate){
+
+  if(
+   navigator.vibrate
+  ){
 
    navigator.vibrate(
     [200,100,200]
@@ -2211,61 +3208,89 @@ function stopTimer(){
  );
 
  document
-  .getElementById("timer")
-  .classList.add("hidden");
+  .getElementById(
+   "timer"
+  )
+  .classList.add(
+   "hidden"
+  );
 
 }
 
 
 /* =========================
-   バックアップ
+   BACKUP
 ========================= */
 
 function backup(){
 
  const blob=
- new Blob(
-  [JSON.stringify(db,null,2)],
-  {
-   type:"application/json"
-  }
- );
+  new Blob(
+   [
+    JSON.stringify(
+     db,
+     null,
+     2
+    )
+   ],
+   {
+    type:
+     "application/json"
+   }
+  );
+
 
  const url=
- URL.createObjectURL(blob);
+  URL.createObjectURL(
+   blob
+  );
+
 
  const a=
- document.createElement("a");
+  document.createElement(
+   "a"
+  );
+
 
  a.href=url;
 
+
  a.download=
- "workout-log-backup-"+
- new Date()
-  .toISOString()
-  .slice(0,10)+
- ".json";
+  "workout-log-backup-"+
+  new Date()
+   .toISOString()
+   .slice(
+    0,
+    10
+   )+
+  ".json";
+
 
  a.click();
 
- URL.revokeObjectURL(url);
+
+ URL.revokeObjectURL(
+  url
+ );
 
 }
 
 
 /* =========================
-   復元
+   RESTORE
 ========================= */
 
 function restore(event){
 
  const file=
- event.target.files[0];
+  event.target.files[0];
 
  if(!file)return;
 
+
  const reader=
- new FileReader();
+  new FileReader();
+
 
  reader.onload=()=>{
 
@@ -2275,6 +3300,7 @@ function restore(event){
     JSON.parse(
      reader.result
     );
+
 
    if(
     !imported.history ||
@@ -2287,19 +3313,42 @@ function restore(event){
 
    }
 
+
    db=imported;
 
+
    draft=
-    db.draft||[];
+    db.draft||
+    [];
+
 
    exerciseLibrary=
-    db.exerciseLibrary||[];
+    db.exerciseLibrary||
+    [];
+
+
+   /*
+    古いバックアップ対策
+   */
+
+   if(
+    !Array.isArray(
+     exerciseLibrary
+    )
+   ){
+
+    exerciseLibrary=[];
+
+   }
+
 
    save();
 
    render();
 
    renderHistory();
+
+   renderExerciseManager();
 
    alert(
     "バックアップを復元しました！"
@@ -2315,48 +3364,55 @@ function restore(event){
 
  };
 
- reader.readAsText(file);
+
+ reader.readAsText(
+  file
+ );
 
 }
 
 
 /* =========================
-   全削除
+   CLEAR
 ========================= */
 
 function clearAll(){
 
  if(
-  confirm(
+  !confirm(
    "すべてのトレーニングデータを削除しますか？"
   )
  ){
 
-  db={
-   history:[],
-   draft:[],
-   exerciseLibrary:[]
-  };
-
-  draft=[];
-
-  exerciseLibrary=[];
-
-  save();
-
-  render();
-
-  renderHistory();
-
-  renderExerciseManager();
+  return;
 
  }
+
+
+ db={
+  history:[],
+  draft:[],
+  exerciseLibrary:[]
+ };
+
+
+ draft=[];
+
+ exerciseLibrary=[];
+
+ save();
+
+ render();
+
+ renderHistory();
+
+ renderExerciseManager();
 
 }
 
 
 /* =========================
-   初期化
+   START
 ========================= */
 
 render();
