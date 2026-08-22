@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -129,6 +128,7 @@ label{
 }
 
 /* セット法 */
+
 .method-grid{
  display:grid;
  grid-template-columns:1fr 1fr;
@@ -151,6 +151,7 @@ label{
 }
 
 /* 部位 */
+
 .part-tabs{
  display:flex;
  gap:6px;
@@ -181,6 +182,7 @@ label{
 }
 
 /* 種目 */
+
 .exercise-list{
  display:flex;
  flex-direction:column;
@@ -211,6 +213,7 @@ label{
 }
 
 /* セット */
+
 .set{
  background:#101010;
  border:1px solid #242424;
@@ -263,6 +266,7 @@ label{
 }
 
 /* スーパー・ジャイアント */
+
 .group{
  background:#101010;
  border:1px solid #242424;
@@ -279,6 +283,7 @@ label{
 }
 
 /* 履歴 */
+
 .history-item{
  padding:14px 0;
  border-bottom:1px solid #292929;
@@ -308,16 +313,6 @@ label{
  border-bottom:0;
 }
 
-.badge{
- display:inline-block;
- background:#292929;
- color:#aaa;
- padding:4px 8px;
- border-radius:99px;
- font-size:10px;
- margin-left:5px;
-}
-
 .pr{
  display:flex;
  justify-content:space-between;
@@ -332,7 +327,18 @@ label{
  line-height:1.8;
 }
 
+.badge{
+ display:inline-block;
+ background:#292929;
+ color:#aaa;
+ padding:4px 8px;
+ border-radius:99px;
+ font-size:10px;
+ margin-left:5px;
+}
+
 /* ナビ */
+
 .bottom{
  position:fixed;
  left:0;
@@ -367,6 +373,7 @@ label{
 }
 
 /* タイマー */
+
 .timer{
  position:fixed;
  right:14px;
@@ -402,7 +409,6 @@ label{
 </style>
 </head>
 
-
 <body>
 
 <div class="app">
@@ -413,7 +419,6 @@ label{
 </header>
 
 <main>
-
 
 <!-- =========================
 WORKOUT
@@ -442,13 +447,10 @@ WORKOUT
 
 </div>
 
-
 <div id="exerciseList"></div>
 
 
-<!-- =========================
-追加エリア
-========================= -->
+<!-- 追加 -->
 
 <div class="card">
 
@@ -537,7 +539,6 @@ WORKOUT
 
   </div>
 
-
   <div id="exercisePicker"></div>
 
  </div>
@@ -602,8 +603,7 @@ SETTINGS
 
   <input
    id="newExerciseName"
-   placeholder="例：ベンチプレス"
-  >
+   placeholder="例：ベンチプレス">
 
   <label>部位</label>
 
@@ -647,8 +647,7 @@ SETTINGS
   <input
    type="file"
    accept=".json"
-   onchange="restore(event)"
-  >
+   onchange="restore(event)">
 
   <button
    class="btn red full"
@@ -661,7 +660,6 @@ SETTINGS
 
 </section>
 
-
 </main>
 
 
@@ -671,9 +669,7 @@ SETTINGS
  id="timer"
  class="timer hidden">
 
- <span id="timerText">
-  00:00
- </span>
+ <span id="timerText">00:00</span>
 
  <button onclick="stopTimer()">
   停止
@@ -682,7 +678,7 @@ SETTINGS
 </div>
 
 
-<!-- BOTTOM -->
+<!-- NAV -->
 
 <nav class="bottom">
 
@@ -719,7 +715,7 @@ DATABASE
 
 const KEY="WORKOUT_LOG_FINAL_2026";
 
-let db;
+let db=null;
 
 try{
 
@@ -727,11 +723,12 @@ try{
   localStorage.getItem(KEY)
  );
 
-}catch{
+}catch(e){
 
  db=null;
 
 }
+
 
 if(!db){
 
@@ -743,6 +740,7 @@ if(!db){
 
 }
 
+
 if(!Array.isArray(db.history))
  db.history=[];
 
@@ -751,118 +749,13 @@ if(!Array.isArray(db.draft))
 
 if(!Array.isArray(db.exercises))
  db.exercises=[];
- /* ==================================================
-デフォルト種目
-================================================== */
-
-const DEFAULT_EXERCISES = [
-
- /* 胸 */
- {name:"ベンチプレス",part:"胸"},
- {name:"インクラインベンチプレス",part:"胸"},
- {name:"インクラインダンベルプレス",part:"胸"},
- {name:"チェストプレス",part:"胸"},
- {name:"ペックフライ",part:"胸"},
- {name:"ダンベルフライ",part:"胸"},
-
- /* 背中 */
- {name:"ラットプルダウン",part:"背中"},
- {name:"懸垂",part:"背中"},
- {name:"シーテッドロー",part:"背中"},
- {name:"ワンハンドダンベルロー",part:"背中"},
- {name:"ベントオーバーロー",part:"背中"},
- {name:"レバーロー",part:"背中"},
-
- /* 肩 */
- {name:"ショルダープレス",part:"肩"},
- {name:"ダンベルショルダープレス",part:"肩"},
- {name:"サイドレイズ",part:"肩"},
- {name:"デルトイドレイズ",part:"肩"},
- {name:"リアレイズ",part:"肩"},
- {name:"フェイスプル",part:"肩"},
-
- /* 腕 */
- {name:"バーベルカール",part:"腕"},
- {name:"EZバーカール",part:"腕"},
- {name:"ダンベルカール",part:"腕"},
- {name:"ハンマーカール",part:"腕"},
- {name:"ケーブルカール",part:"腕"},
- {name:"プレスダウン",part:"腕"},
- {name:"フレンチプレス",part:"腕"},
- {name:"ライイングエクステンション",part:"腕"},
-
- /* 脚 */
- {name:"スクワット",part:"脚"},
- {name:"レッグプレス",part:"脚"},
- {name:"ハックスクワット",part:"脚"},
- {name:"レッグエクステンション",part:"脚"},
- {name:"レッグカール",part:"脚"},
- {name:"ブルガリアンスクワット",part:"脚"},
- {name:"ルーマニアンデッドリフト",part:"脚"},
- {name:"カーフレイズ",part:"脚"},
-
- /* お尻 */
- {name:"ヒップスラスト",part:"お尻"},
- {name:"グルートブリッジ",part:"お尻"},
- {name:"アブダクション",part:"お尻"},
- {name:"ブルガリアンスクワット",part:"お尻"},
- {name:"ルーマニアンデッドリフト",part:"お尻"},
-
- /* 腹部 */
- {name:"アブドミナルクランチ",part:"腹部"},
- {name:"ケーブルクランチ",part:"腹部"},
- {name:"レッグレイズ",part:"腹部"},
- {name:"ハンギングレッグレイズ",part:"腹部"},
-
- /* その他 */
- {name:"デッドリフト",part:"その他"},
- {name:"ハイクリーン",part:"その他"}
-
-];
-
-
-/*
-初回のみデフォルト種目を登録
-既に自分で登録した種目は消さない
-*/
-
-if(db.exercises.length===0){
-
- db.exercises=
- DEFAULT_EXERCISES.map(
-  exercise=>({
-
-   id:uid(),
-
-   name:exercise.name,
-
-   part:exercise.part
-
-  })
- );
-
- localStorage.setItem(
-  KEY,
-  JSON.stringify(db)
- );
-
-}
 
 
 let draft=db.draft;
 
 
 /* ==================================================
-現在の選択状態
-================================================== */
-
-let selectedMethod="";
-
-let selectedPart="";
-
-
-/* ==================================================
-UTILITY
+ID
 ================================================== */
 
 function uid(){
@@ -875,9 +768,149 @@ function uid(){
 }
 
 
+/* ==================================================
+デフォルト種目
+================================================== */
+
+const DEFAULT_EXERCISES=[
+
+ /* 胸 */
+
+ {name:"ベンチプレス",part:"胸"},
+ {name:"インクラインベンチプレス",part:"胸"},
+ {name:"インクラインダンベルプレス",part:"胸"},
+ {name:"チェストプレス",part:"胸"},
+ {name:"ペックフライ",part:"胸"},
+ {name:"ダンベルフライ",part:"胸"},
+
+
+ /* 背中 */
+
+ {name:"ラットプルダウン",part:"背中"},
+ {name:"懸垂",part:"背中"},
+ {name:"シーテッドロー",part:"背中"},
+ {name:"ワンハンドダンベルロー",part:"背中"},
+ {name:"ベントオーバーロー",part:"背中"},
+ {name:"レバーロー",part:"背中"},
+
+
+ /* 肩 */
+
+ {name:"ショルダープレス",part:"肩"},
+ {name:"ダンベルショルダープレス",part:"肩"},
+ {name:"サイドレイズ",part:"肩"},
+ {name:"デルトイドレイズ",part:"肩"},
+ {name:"リアレイズ",part:"肩"},
+ {name:"フェイスプル",part:"肩"},
+
+
+ /* 腕 */
+
+ {name:"バーベルカール",part:"腕"},
+ {name:"EZバーカール",part:"腕"},
+ {name:"ダンベルカール",part:"腕"},
+ {name:"ハンマーカール",part:"腕"},
+ {name:"ケーブルカール",part:"腕"},
+ {name:"プレスダウン",part:"腕"},
+ {name:"フレンチプレス",part:"腕"},
+ {name:"ライイングエクステンション",part:"腕"},
+
+
+ /* 脚 */
+
+ {name:"スクワット",part:"脚"},
+ {name:"レッグプレス",part:"脚"},
+ {name:"ハックスクワット",part:"脚"},
+ {name:"レッグエクステンション",part:"脚"},
+ {name:"レッグカール",part:"脚"},
+ {name:"ブルガリアンスクワット",part:"脚"},
+ {name:"ルーマニアンデッドリフト",part:"脚"},
+ {name:"カーフレイズ",part:"脚"},
+
+
+ /* お尻 */
+
+ {name:"ヒップスラスト",part:"お尻"},
+ {name:"グルートブリッジ",part:"お尻"},
+ {name:"アブダクション",part:"お尻"},
+ {name:"ブルガリアンスクワット",part:"お尻"},
+ {name:"ルーマニアンデッドリフト",part:"お尻"},
+
+
+ /* 腹部 */
+
+ {name:"アブドミナルクランチ",part:"腹部"},
+ {name:"ケーブルクランチ",part:"腹部"},
+ {name:"レッグレイズ",part:"腹部"},
+ {name:"ハンギングレッグレイズ",part:"腹部"},
+
+
+ /* その他 */
+
+ {name:"デッドリフト",part:"その他"},
+ {name:"ハイクリーン",part:"その他"}
+
+];
+
+
+/*
+既存データがある場合でも、
+足りないデフォルト種目だけ追加する。
+*/
+
+DEFAULT_EXERCISES.forEach(
+ defaultExercise=>{
+
+  const exists=
+  db.exercises.some(
+   exercise=>
+    exercise.name===
+    defaultExercise.name &&
+    exercise.part===
+    defaultExercise.part
+  );
+
+
+  if(!exists){
+
+   db.exercises.push({
+
+    id:uid(),
+
+    name:defaultExercise.name,
+
+    part:defaultExercise.part
+
+   });
+
+  }
+
+ });
+
+
+/* ==================================================
+SAVE
+================================================== */
+
+function save(){
+
+ db.draft=draft;
+
+ localStorage.setItem(
+  KEY,
+  JSON.stringify(db)
+ );
+
+}
+
+
+/* ==================================================
+UTILITY
+================================================== */
+
 function esc(value){
 
- return String(value ?? "")
+ return String(value??"")
  .replace(
   /[&<>"']/g,
   function(m){
@@ -891,18 +924,6 @@ function esc(value){
    }[m];
 
   }
- );
-
-}
-
-
-function save(){
-
- db.draft=draft;
-
- localStorage.setItem(
-  KEY,
-  JSON.stringify(db)
  );
 
 }
@@ -945,7 +966,7 @@ function methodLabel(type){
 
   giant:"ジャイアントセット"
 
- }[type] || "";
+ }[type]||"";
 
 }
 
@@ -954,56 +975,69 @@ function methodLabel(type){
 DATE
 ================================================== */
 
-document.getElementById("date").textContent=
-new Date().toLocaleDateString(
- "ja-JP",
- {
-  year:"numeric",
-  month:"long",
-  day:"numeric",
-  weekday:"short"
- }
-);
+document
+ .getElementById("date")
+ .textContent=
+ new Date()
+ .toLocaleDateString(
+  "ja-JP",
+  {
+   year:"numeric",
+   month:"long",
+   day:"numeric",
+   weekday:"short"
+  }
+ );
 
 
 /* ==================================================
-① セット法選択
+選択状態
+================================================== */
+
+let selectedMethod="";
+
+let selectedPart="";
+
+
+/* ==================================================
+セット法
 ================================================== */
 
 function selectMethod(type){
 
  selectedMethod=type;
 
- /*
- 部位を一度だけ初期化。
- 同じセット法を押した場合は
- 部位を維持する。
- */
-
- if(!selectedPart){
-
+ if(!selectedPart)
   selectedPart="胸";
 
- }
 
  document
- .querySelectorAll(".method-button")
- .forEach(
-  button=>{
-   button.classList.remove("active");
-  }
- );
-
- document
- .getElementById(
-  "method-"+type
- )
- .classList.add("active");
+  .querySelectorAll(
+   ".method-button"
+  )
+  .forEach(
+   button=>{
+    button.classList.remove(
+     "active"
+    );
+   }
+  );
 
 
  document
- .getElementById("partArea")
- .classList.remove("hidden");
+  .getElementById(
+   "method-"+type
+  )
+  .classList.add("active");
+
+
+ document
+  .getElementById(
+   "partArea"
+  )
+  .classList.remove(
+   "hidden"
+  );
 
 
  renderPartArea();
@@ -1012,7 +1046,7 @@ function selectMethod(type){
 
 
 /* ==================================================
-② 部位選択
+部位
 ================================================== */
 
 function selectPart(part){
@@ -1025,24 +1059,26 @@ function selectPart(part){
 
 
 /* ==================================================
-部位UI
+部位表示
 ================================================== */
 
 function renderPartArea(){
 
  document
- .querySelectorAll(".part-tab")
- .forEach(
-  button=>{
+  .querySelectorAll(
+   ".part-tab"
+  )
+  .forEach(
+   button=>{
 
-   button.classList.toggle(
-    "active",
-    button.textContent.trim()===
-    selectedPart
-   );
+    button.classList.toggle(
+     "active",
+     button.textContent.trim()===
+     selectedPart
+    );
 
-  }
- );
+   }
+  );
 
 
  renderExercisePicker();
@@ -1051,7 +1087,7 @@ function renderPartArea(){
 
 
 /* ==================================================
-③ 種目選択
+種目選択
 ================================================== */
 
 function renderExercisePicker(){
@@ -1062,8 +1098,10 @@ function renderExercisePicker(){
  );
 
 
- if(!selectedMethod ||
-    !selectedPart){
+ if(
+  !selectedMethod||
+  !selectedPart
+ ){
 
   root.innerHTML="";
 
@@ -1075,7 +1113,8 @@ function renderExercisePicker(){
  const list=
  db.exercises.filter(
   exercise=>
-   exercise.part===selectedPart
+   exercise.part===
+   selectedPart
  );
 
 
@@ -1093,10 +1132,7 @@ function renderExercisePicker(){
   html+=`
 
    <div class="empty">
-
-    ${selectedPart}に登録された種目がありません。<br>
-    「設定」から種目を登録してください。
-
+    種目がありません
    </div>
 
   `;
@@ -1145,19 +1181,17 @@ function renderExercisePicker(){
 
  html+=`
 
-  <div
-   style="margin-top:12px">
+  <div style="margin-top:12px">
 
    <label>
-    登録していない種目を直接入力
+    登録されていない種目を直接追加
    </label>
 
    <div class="row">
 
     <input
      id="directName"
-     placeholder="例：ベンチプレス"
-    >
+     placeholder="種目名">
 
     <button
      class="btn"
@@ -1178,7 +1212,7 @@ function renderExercisePicker(){
 
 
 /* ==================================================
-直接入力
+直接追加
 ================================================== */
 
 function addDirectExercise(){
@@ -1199,7 +1233,9 @@ function addDirectExercise(){
 
  if(!name){
 
-  alert("種目名を入力してください");
+  alert(
+   "種目名を入力してください"
+  );
 
   return;
 
@@ -1210,7 +1246,6 @@ function addDirectExercise(){
   selectedMethod,
   name
  );
-
 
 }
 
@@ -1239,8 +1274,10 @@ function addExercise(
  };
 
 
- /* 通常 */
- if(type==="normal"){
+ if(
+  type==="normal"||
+  type==="drop"
+ ){
 
   exercise.sets=[
    newSet(),
@@ -1251,92 +1288,30 @@ function addExercise(
  }
 
 
- /* ドロップ */
- if(type==="drop"){
-
-  exercise.sets=[
-   newSet(),
-   newSet(),
-   newSet()
-  ];
-
- }
-
-
- /* スーパー */
  if(type==="superset"){
 
   exercise.groups=[
 
-   {
-    id:uid(),
-    name:name,
-    sets:[
-     newSet(),
-     newSet(),
-     newSet()
-    ]
-   },
+   createGroup(name),
 
-   {
-    id:uid(),
-    name:"",
-    sets:[
-     newSet(),
-     newSet(),
-     newSet()
-    ]
-   }
+   createGroup("")
 
   ];
 
  }
 
 
- /* ジャイアント */
  if(type==="giant"){
 
   exercise.groups=[
 
-   {
-    id:uid(),
-    name:name,
-    sets:[
-     newSet(),
-     newSet(),
-     newSet()
-    ]
-   },
+   createGroup(name),
 
-   {
-    id:uid(),
-    name:"",
-    sets:[
-     newSet(),
-     newSet(),
-     newSet()
-    ]
-   },
+   createGroup(""),
 
-   {
-    id:uid(),
-    name:"",
-    sets:[
-     newSet(),
-     newSet(),
-     newSet()
-    ]
-   },
+   createGroup(""),
 
-   {
-    id:uid(),
-    name:"",
-    sets:[
-     newSet(),
-     newSet(),
-     newSet()
-    ]
-   }
+   createGroup("")
 
   ];
 
@@ -1349,14 +1324,52 @@ function addExercise(
 
  render();
 
- /*
- ここが今回の重要ポイント。
-
- セット法と部位は変更しない。
- そのため連続追加ができる。
- */
-
  renderPartArea();
+
+}
+
+
+function createGroup(name){
+
+ return{
+
+  id:uid(),
+
+  name:name,
+
+  sets:[
+   newSet(),
+   newSet(),
+   newSet()
+  ]
+
+ };
+
+}
+
+
+/* ==================================================
+種目名変更
+================================================== */
+
+function updateExerciseName(
+ id,
+ value
+){
+
+ const exercise=
+ draft.find(
+  x=>x.id===id
+ );
+
+
+ if(!exercise)
+  return;
+
+
+ exercise.name=value;
+
+ save();
 
 }
 
@@ -1369,7 +1382,8 @@ function deleteWorkoutExercise(id){
 
  draft=
  draft.filter(
-  exercise=>exercise.id!==id
+  exercise=>
+   exercise.id!==id
  );
 
  save();
@@ -1380,7 +1394,7 @@ function deleteWorkoutExercise(id){
 
 
 /* ==================================================
-通常・ドロップセット更新
+セット更新
 ================================================== */
 
 function updateSet(
@@ -1413,11 +1427,6 @@ function updateSet(
  set[key]=value;
 
  save();
-
- /*
- 入力中はrenderしない。
- これで重量・回数が消えない。
- */
 
 }
 
@@ -1468,7 +1477,9 @@ function deleteSet(
   return;
 
 
- if(exercise.sets.length<=1){
+ if(
+  exercise.sets.length<=1
+ ){
 
   alert(
    "最低1セットは残してください"
@@ -1532,7 +1543,7 @@ function toggleSet(
 
 
 /* ==================================================
-スーパー・ジャイアント
+グループ
 ================================================== */
 
 function updateGroupName(
@@ -1546,6 +1557,7 @@ function updateGroupName(
   x=>x.id===exerciseId
  );
 
+
  if(!exercise)
   return;
 
@@ -1554,6 +1566,7 @@ function updateGroupName(
  exercise.groups.find(
   x=>x.id===groupId
  );
+
 
  if(!group)
   return;
@@ -1579,6 +1592,7 @@ function updateGroupSet(
   x=>x.id===exerciseId
  );
 
+
  if(!exercise)
   return;
 
@@ -1588,6 +1602,7 @@ function updateGroupSet(
   x=>x.id===groupId
  );
 
+
  if(!group)
   return;
 
@@ -1596,6 +1611,7 @@ function updateGroupSet(
  group.sets.find(
   x=>x.id===setId
  );
+
 
  if(!set)
   return;
@@ -1618,6 +1634,7 @@ function addGroupSet(
   x=>x.id===exerciseId
  );
 
+
  if(!exercise)
   return;
 
@@ -1626,6 +1643,7 @@ function addGroupSet(
  exercise.groups.find(
   x=>x.id===groupId
  );
+
 
  if(!group)
   return;
@@ -1653,6 +1671,7 @@ function deleteGroupSet(
   x=>x.id===exerciseId
  );
 
+
  if(!exercise)
   return;
 
@@ -1662,11 +1681,14 @@ function deleteGroupSet(
   x=>x.id===groupId
  );
 
+
  if(!group)
   return;
 
 
- if(group.sets.length<=1){
+ if(
+  group.sets.length<=1
+ ){
 
   alert(
    "最低1セットは残してください"
@@ -1698,23 +1720,14 @@ function addGroupExercise(
   x=>x.id===exerciseId
  );
 
+
  if(!exercise)
   return;
 
 
- exercise.groups.push({
-
-  id:uid(),
-
-  name:"",
-
-  sets:[
-   newSet(),
-   newSet(),
-   newSet()
-  ]
-
- });
+ exercise.groups.push(
+  createGroup("")
+ );
 
  save();
 
@@ -1733,11 +1746,14 @@ function deleteGroupExercise(
   x=>x.id===exerciseId
  );
 
+
  if(!exercise)
   return;
 
 
- if(exercise.groups.length<=2){
+ if(
+  exercise.groups.length<=2
+ ){
 
   alert(
    "最低2種目は残してください"
@@ -1780,7 +1796,8 @@ function findPrevious(name){
 
    if(
     exercise.name===name &&
-    exercise.groups.length===0
+    (!exercise.groups||
+     !exercise.groups.length)
    ){
 
     return exercise;
@@ -1789,7 +1806,7 @@ function findPrevious(name){
 
 
    if(
-    exercise.groups &&
+    exercise.groups&&
     exercise.groups.length
    ){
 
@@ -1797,11 +1814,8 @@ function findPrevious(name){
      const group of exercise.groups
     ){
 
-     if(group.name===name){
-
+     if(group.name===name)
       return group;
-
-     }
 
     }
 
@@ -1818,7 +1832,7 @@ function findPrevious(name){
 
 
 /* ==================================================
-セットHTML
+通常セット表示
 ================================================== */
 
 function renderSet(
@@ -1843,7 +1857,6 @@ function renderSet(
     step="0.5"
     placeholder="重量 kg"
     value="${esc(set.weight)}"
-
     oninput="
      updateSet(
       '${exercise.id}',
@@ -1851,15 +1864,13 @@ function renderSet(
       'weight',
       this.value
      )
-    "
-   >
+    ">
 
    <input
     type="number"
     inputmode="numeric"
     placeholder="回数"
     value="${esc(set.reps)}"
-
     oninput="
      updateSet(
       '${exercise.id}',
@@ -1867,8 +1878,7 @@ function renderSet(
       'reps',
       this.value
      )
-    "
-   >
+    ">
 
    <button
     class="btn red"
@@ -1938,7 +1948,6 @@ function renderSet(
      type="number"
      placeholder="休憩秒数"
      value="${esc(set.restSeconds)}"
-
      oninput="
       updateSet(
        '${exercise.id}',
@@ -1946,14 +1955,13 @@ function renderSet(
        'restSeconds',
        this.value
       )
-     "
-    >
+     ">
 
     <button
      class="btn"
      onclick="
       startTimer(
-       Number('${set.restSeconds}') || 15
+       Number('${set.restSeconds}')||15
       )
      ">
      タイマー
@@ -1971,7 +1979,6 @@ function renderSet(
    style="margin-top:7px"
    placeholder="メモ"
    value="${esc(set.note)}"
-
    oninput="
     updateSet(
      '${exercise.id}',
@@ -1979,8 +1986,7 @@ function renderSet(
      'note',
      this.value
     )
-   "
-  >
+   ">
 
  </div>
 
@@ -1990,7 +1996,7 @@ function renderSet(
 
 
 /* ==================================================
-グループセットHTML
+グループセット表示
 ================================================== */
 
 function renderGroupSet(
@@ -2016,7 +2022,6 @@ function renderGroupSet(
     step="0.5"
     placeholder="重量 kg"
     value="${esc(set.weight)}"
-
     oninput="
      updateGroupSet(
       '${exercise.id}',
@@ -2025,15 +2030,13 @@ function renderGroupSet(
       'weight',
       this.value
      )
-    "
-   >
+    ">
 
    <input
     type="number"
     inputmode="numeric"
     placeholder="回数"
     value="${esc(set.reps)}"
-
     oninput="
      updateGroupSet(
       '${exercise.id}',
@@ -2042,8 +2045,7 @@ function renderGroupSet(
       'reps',
       this.value
      )
-    "
-   >
+    ">
 
    <button
     class="btn red"
@@ -2059,11 +2061,11 @@ function renderGroupSet(
 
   </div>
 
+
   <input
    style="margin-top:7px"
    placeholder="メモ"
    value="${esc(set.note)}"
-
    oninput="
     updateGroupSet(
      '${exercise.id}',
@@ -2072,8 +2074,7 @@ function renderGroupSet(
      'note',
      this.value
     )
-   "
-  >
+   ">
 
  </div>
 
@@ -2123,37 +2124,37 @@ function render(){
 
    let html=`
 
-    <div class="card">
+   <div class="card">
 
-     <div class="row between">
+    <div class="row between">
 
-      <div class="title">
+     <div class="title">
 
-       ${index+1}.
-       ${esc(
-        exercise.name ||
-        "種目名"
+      ${index+1}.
+      ${esc(
+       exercise.name||
+       "種目名"
+      )}
+
+      <span class="badge">
+       ${methodLabel(
+        exercise.type
        )}
-
-       <span class="badge">
-        ${methodLabel(
-         exercise.type
-        )}
-       </span>
-
-      </div>
-
-      <button
-       class="btn red"
-       onclick="
-        deleteWorkoutExercise(
-         '${exercise.id}'
-        )
-       ">
-       削除
-      </button>
+      </span>
 
      </div>
+
+     <button
+      class="btn red"
+      onclick="
+       deleteWorkoutExercise(
+        '${exercise.id}'
+       )
+      ">
+      削除
+     </button>
+
+    </div>
 
    `;
 
@@ -2161,7 +2162,7 @@ function render(){
    /* 通常・ドロップ */
 
    if(
-    exercise.type==="normal" ||
+    exercise.type==="normal"||
     exercise.type==="drop"
    ){
 
@@ -2198,8 +2199,7 @@ function render(){
         '${exercise.id}',
         this.value
        )
-      "
-     >
+      ">
 
     `;
 
@@ -2208,11 +2208,11 @@ function render(){
      (set,index)=>{
 
       html+=
-      renderSet(
-       exercise,
-       set,
-       index
-      );
+       renderSet(
+        exercise,
+        set,
+        index
+       );
 
      }
     );
@@ -2239,7 +2239,7 @@ function render(){
    /* スーパー・ジャイアント */
 
    if(
-    exercise.type==="superset" ||
+    exercise.type==="superset"||
     exercise.type==="giant"
    ){
 
@@ -2256,9 +2256,9 @@ function render(){
      (group,gIndex)=>{
 
       const previousGroup=
-      findPrevious(
-       group.name
-      );
+       findPrevious(
+        group.name
+       );
 
 
       html+=`
@@ -2272,15 +2272,13 @@ function render(){
         <input
          placeholder="種目名"
          value="${esc(group.name)}"
-
          oninput="
           updateGroupName(
            '${exercise.id}',
            '${group.id}',
            this.value
           )
-         "
-        >
+         ">
 
       `;
 
@@ -2311,12 +2309,12 @@ function render(){
        (set,setIndex)=>{
 
         html+=
-        renderGroupSet(
-         exercise,
-         group,
-         set,
-         setIndex
-        );
+         renderGroupSet(
+          exercise,
+          group,
+          set,
+          setIndex
+         );
 
        }
       );
@@ -2393,7 +2391,7 @@ function render(){
 
 
 /* ==================================================
-保存
+トレーニング保存
 ================================================== */
 
 function finishWorkout(){
@@ -2426,6 +2424,7 @@ function finishWorkout(){
  db.history.unshift(
   workout
  );
+
 
  draft=[];
 
@@ -2479,6 +2478,7 @@ function copyLastWorkout(){
      set=>{
 
       set.id=uid();
+
       set.weight="";
       set.reps="";
       set.note="";
@@ -2500,6 +2500,7 @@ function copyLastWorkout(){
        set=>{
 
         set.id=uid();
+
         set.weight="";
         set.reps="";
         set.note="";
@@ -2588,7 +2589,7 @@ function renderHistory(){
 
         <b>
          ${esc(
-          exercise.name ||
+          exercise.name||
           "種目"
          )}
         </b>
@@ -2605,7 +2606,7 @@ function renderHistory(){
 
 
      if(
-      exercise.type==="normal" ||
+      exercise.type==="normal"||
       exercise.type==="drop"
      ){
 
@@ -2637,7 +2638,7 @@ function renderHistory(){
 
 
      if(
-      exercise.type==="superset" ||
+      exercise.type==="superset"||
       exercise.type==="giant"
      ){
 
@@ -2650,7 +2651,7 @@ function renderHistory(){
 
           <div class="group-title">
            ${esc(
-            group.name ||
+            group.name||
             "種目名"
            )}
           </div>
@@ -2745,7 +2746,7 @@ function renderPR(){
     exercise=>{
 
      if(
-      exercise.type==="superset" ||
+      exercise.type==="superset"||
       exercise.type==="giant"
      ){
 
@@ -2760,11 +2761,11 @@ function renderPR(){
          set=>{
 
           const weight=
-          Number(set.weight)||0;
+           Number(set.weight)||0;
 
 
           if(
-           !prs[group.name] ||
+           !prs[group.name]||
            weight>prs[group.name]
           ){
 
@@ -2788,11 +2789,11 @@ function renderPR(){
        set=>{
 
         const weight=
-        Number(set.weight)||0;
+         Number(set.weight)||0;
 
 
         if(
-         !prs[exercise.name] ||
+         !prs[exercise.name]||
          weight>prs[exercise.name]
         ){
 
@@ -2865,32 +2866,34 @@ function showPage(
   page=>{
 
    document
-   .getElementById(
-    page+"Page"
-   )
-   .classList.toggle(
-    "hidden",
-    page!==name
-   );
+    .getElementById(
+     page+"Page"
+    )
+    .classList.toggle(
+     "hidden",
+     page!==name
+    );
 
   }
  );
 
 
  document
- .querySelectorAll(
-  ".bottom button"
- )
- .forEach(
-  b=>{
-   b.classList.remove(
-    "active"
-   );
-  }
+  .querySelectorAll(
+   ".bottom button"
+  )
+  .forEach(
+   b=>{
+    b.classList.remove(
+     "active"
+    );
+   }
+  );
+
+
+ button.classList.add(
+  "active"
  );
-
-
- button.classList.add("active");
 
 
  if(name==="history")
@@ -2911,19 +2914,19 @@ function registerExercise(){
 
  const name=
  document
- .getElementById(
-  "newExerciseName"
- )
- .value
- .trim();
+  .getElementById(
+   "newExerciseName"
+  )
+  .value
+  .trim();
 
 
  const part=
  document
- .getElementById(
-  "newExercisePart"
- )
- .value;
+  .getElementById(
+   "newExercisePart"
+  )
+  .value;
 
 
  if(!name){
@@ -2939,7 +2942,9 @@ function registerExercise(){
 
  if(
   db.exercises.some(
-   x=>x.name===name
+   exercise=>
+    exercise.name===name &&
+    exercise.part===part
   )
  ){
 
@@ -2964,10 +2969,10 @@ function registerExercise(){
 
 
  document
- .getElementById(
-  "newExerciseName"
- )
- .value="";
+  .getElementById(
+   "newExerciseName"
+  )
+  .value="";
 
 
  save();
@@ -2981,11 +2986,16 @@ function registerExercise(){
 }
 
 
+/* ==================================================
+登録種目削除
+================================================== */
+
 function deleteExerciseLibrary(id){
 
  db.exercises=
  db.exercises.filter(
-  x=>x.id!==id
+  exercise=>
+   exercise.id!==id
  );
 
  save();
@@ -3026,9 +3036,10 @@ function renderExerciseManager(){
   part=>{
 
    const list=
-   db.exercises.filter(
-    x=>x.part===part
-   );
+    db.exercises.filter(
+     exercise=>
+      exercise.part===part
+    );
 
 
    if(!list.length)
@@ -3049,7 +3060,8 @@ function renderExerciseManager(){
 
      html+=`
 
-      <div class="row"
+      <div
+       class="row"
        style="margin-top:6px">
 
        <div
@@ -3109,20 +3121,25 @@ function startTimer(seconds){
  stopTimer();
 
  timerEnd=
- Date.now()+
- seconds*1000;
+  Date.now()+
+  seconds*1000;
+
 
  document
- .getElementById("timer")
- .classList.remove("hidden");
+  .getElementById("timer")
+  .classList.remove(
+   "hidden"
+  );
+
 
  updateTimer();
 
+
  timerInterval=
- setInterval(
-  updateTimer,
-  250
- );
+  setInterval(
+   updateTimer,
+   250
+  );
 
 }
 
@@ -3130,36 +3147,36 @@ function startTimer(seconds){
 function updateTimer(){
 
  const remaining=
- Math.max(
-  0,
-  timerEnd-Date.now()
- );
+  Math.max(
+   0,
+   timerEnd-Date.now()
+  );
 
 
  const sec=
- Math.ceil(
-  remaining/1000
- );
+  Math.ceil(
+   remaining/1000
+  );
 
 
  const min=
- String(
-  Math.floor(sec/60)
- ).padStart(2,"0");
+  String(
+   Math.floor(sec/60)
+  ).padStart(2,"0");
 
 
  const second=
- String(
-  sec%60
- ).padStart(2,"0");
+  String(
+   sec%60
+  ).padStart(2,"0");
 
 
  document
- .getElementById(
-  "timerText"
- )
- .textContent=
- `${min}:${second}`;
+  .getElementById(
+   "timerText"
+  )
+  .textContent=
+  `${min}:${second}`;
 
 
  if(remaining<=0){
@@ -3189,8 +3206,10 @@ function stopTimer(){
  );
 
  document
- .getElementById("timer")
- .classList.add("hidden");
+  .getElementById("timer")
+  .classList.add(
+   "hidden"
+  );
 
 }
 
@@ -3202,43 +3221,49 @@ function stopTimer(){
 function backup(){
 
  const blob=
- new Blob(
-  [
-   JSON.stringify(
-    db,
-    null,
-    2
-   )
-  ],
-  {
-   type:"application/json"
-  }
- );
+  new Blob(
+   [
+    JSON.stringify(
+     db,
+     null,
+     2
+    )
+   ],
+   {
+    type:"application/json"
+   }
+  );
 
 
  const url=
- URL.createObjectURL(blob);
+  URL.createObjectURL(
+   blob
+  );
 
 
  const a=
- document.createElement("a");
+  document.createElement(
+   "a"
+  );
 
 
  a.href=url;
 
 
  a.download=
- "workout-log-backup-"+
- new Date()
- .toISOString()
- .slice(0,10)+
- ".json";
+  "workout-log-backup-"+
+  new Date()
+   .toISOString()
+   .slice(0,10)+
+  ".json";
 
 
  a.click();
 
 
- URL.revokeObjectURL(url);
+ URL.revokeObjectURL(
+  url
+ );
 
 }
 
@@ -3250,7 +3275,7 @@ function backup(){
 function restore(event){
 
  const file=
- event.target.files[0];
+  event.target.files[0];
 
 
  if(!file)
@@ -3258,69 +3283,114 @@ function restore(event){
 
 
  const reader=
- new FileReader();
+  new FileReader();
 
 
  reader.onload=
- function(){
+  function(){
 
-  try{
+   try{
 
-   const imported=
-   JSON.parse(
-    reader.result
-   );
+    const imported=
+     JSON.parse(
+      reader.result
+     );
 
 
-   if(
-    !Array.isArray(
-     imported.history
+    if(
+     !Array.isArray(
+      imported.history
+     )
+    ){
+
+     throw new Error();
+
+    }
+
+
+    db=imported;
+
+
+    if(
+     !Array.isArray(
+      db.draft
+     )
     )
-   ){
+     db.draft=[];
 
-    throw new Error();
+
+    if(
+     !Array.isArray(
+      db.exercises
+     )
+    )
+     db.exercises=[];
+
+
+    draft=db.draft;
+
+
+    /*
+    復元したデータにも
+    デフォルト種目を補充
+    */
+
+    DEFAULT_EXERCISES.forEach(
+     defaultExercise=>{
+
+      const exists=
+       db.exercises.some(
+        exercise=>
+         exercise.name===
+         defaultExercise.name &&
+         exercise.part===
+         defaultExercise.part
+       );
+
+
+      if(!exists){
+
+       db.exercises.push({
+
+        id:uid(),
+
+        name:
+         defaultExercise.name,
+
+        part:
+         defaultExercise.part
+
+       });
+
+      }
+
+     }
+    );
+
+
+    save();
+
+    render();
+
+    renderHistory();
+
+    renderExerciseManager();
+
+
+    alert(
+     "バックアップを復元しました"
+    );
+
+
+   }catch(e){
+
+    alert(
+     "バックアップファイルを読み込めませんでした"
+    );
 
    }
 
-
-   db=imported;
-
-
-   if(
-    !Array.isArray(db.draft)
-   )
-    db.draft=[];
-
-
-   if(
-    !Array.isArray(db.exercises)
-   )
-    db.exercises=[];
-
-
-   draft=db.draft;
-
-   save();
-
-   render();
-
-   renderHistory();
-
-   renderExerciseManager();
-
-   alert(
-    "バックアップを復元しました"
-   );
-
-  }catch{
-
-   alert(
-    "バックアップファイルを読み込めませんでした"
-   );
-
-  }
-
- };
+  };
 
 
  reader.readAsText(file);
@@ -3329,7 +3399,7 @@ function restore(event){
 
 
 /* ==================================================
-全削除
+全データ削除
 ================================================== */
 
 function clearAll(){
@@ -3350,6 +3420,28 @@ function clearAll(){
   draft:[],
   exercises:[]
  };
+
+
+ /*
+ 全削除後も代表種目は
+ 自動的に復活させる
+ */
+
+ DEFAULT_EXERCISES.forEach(
+  exercise=>{
+
+   db.exercises.push({
+
+    id:uid(),
+
+    name:exercise.name,
+
+    part:exercise.part
+
+   });
+
+  }
+ );
 
 
  draft=[];
